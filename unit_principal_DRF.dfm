@@ -95,11 +95,10 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     Top = 63
     Width = 145
     Height = 21
-    ItemIndex = 0
     TabOrder = 2
     Text = 'Data de lan'#231'amento'
     Items.Strings = (
-      'Data de lan'#231'amento'
-      'Data de pagamento ')
+      'Data de pagamento '
+      'Data de lan'#231'amento')
   end
 end

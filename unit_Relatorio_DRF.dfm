@@ -19,10 +19,10 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     Top = 0
     Width = 1123
     Height = 794
-    Margins.LeftMargin = 5.000000000000000000
-    Margins.TopMargin = 7.000000000000000000
-    Margins.RightMargin = 5.000000000000000000
-    Margins.BottomMargin = 5.000000000000000000
+    Margins.LeftMargin = 2.000000000000000000
+    Margins.TopMargin = 5.000000000000000000
+    Margins.RightMargin = 2.000000000000000000
+    Margins.BottomMargin = 3.000000000000000000
     DataSource = dsDRF
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -31,9 +31,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     Font.Style = []
     PageSetup.Orientation = poLandscape
     object RLBand1: TRLBand
-      Left = 19
-      Top = 26
-      Width = 1085
+      Left = 8
+      Top = 19
+      Width = 1107
       Height = 93
       BandType = btHeader
       object RLPanel1: TRLPanel
@@ -228,7 +228,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
       end
       object RLLabel7: TRLLabel
-        Left = 308
+        Left = 240
         Top = 72
         Width = 50
         Height = 16
@@ -243,7 +243,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
       end
       object RLLabel8: TRLLabel
-        Left = 381
+        Left = 311
         Top = 72
         Width = 47
         Height = 16
@@ -258,58 +258,52 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
       end
     end
-    object RLGroup1: TRLGroup
-      Left = 19
-      Top = 119
-      Width = 1085
-      Height = 17
-      DataFields = 'TIPO'
-      object RLBand2: TRLBand
+    object RLBand2: TRLBand
+      Left = 8
+      Top = 112
+      Width = 1107
+      Height = 16
+      BeforePrint = RLBand2BeforePrint
+      object dbConta: TRLDBText
         Left = 0
-        Top = 0
-        Width = 1085
-        Height = 16
-        object dbConta: TRLDBText
-          Left = 0
-          Top = 1
-          Width = 302
-          Height = 14
-          AutoSize = False
-          DataField = 'DESCRICAO'
-          DataSource = dsDRF
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Arial'
-          Font.Style = [fsBold]
-          Layout = tlCenter
-          ParentFont = False
-          Text = ''
-        end
-        object dbSaldoTotal: TRLDBText
-          Left = 308
-          Top = 1
-          Width = 71
-          Height = 14
-          AutoSize = False
-          DataField = 'SALDO'
-          DataSource = dsDRF
-          DisplayMask = '#,##0.00'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Arial'
-          Font.Style = []
-          Layout = tlCenter
-          ParentFont = False
-          Text = ''
-        end
+        Top = 1
+        Width = 239
+        Height = 14
+        AutoSize = False
+        DataField = 'DESCRICAO'
+        DataSource = dsDRF
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        Layout = tlCenter
+        ParentFont = False
+        Text = ''
+      end
+      object dbSaldoTotal: TRLDBText
+        Left = 240
+        Top = 1
+        Width = 71
+        Height = 14
+        AutoSize = False
+        DataField = 'SALDO'
+        DataSource = dsDRF
+        DisplayMask = '#,##0.00'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Arial'
+        Font.Style = []
+        Layout = tlCenter
+        ParentFont = False
+        Text = ''
       end
     end
   end
   object dsDRF: TDataSource
     DataSet = frm_dataModule.FDQuery1
-    Left = 42
-    Top = 42
+    Left = 14
+    Top = 14
   end
 end

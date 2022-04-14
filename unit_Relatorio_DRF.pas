@@ -12,6 +12,7 @@ type
     classificacao: string;
     nome: string;
     valor : Currency ;
+    nivel : Integer ;
   end;
   TContasBct = array of TContaBct;
 
@@ -33,14 +34,14 @@ type
     RLLabel6: TRLLabel;
     RLLabel7: TRLLabel;
     RLLabel8: TRLLabel;
-    RLGroup1: TRLGroup;
+    labelNomeEmpresa: TRLLabel;
     RLBand2: TRLBand;
     dbConta: TRLDBText;
-    labelNomeEmpresa: TRLLabel;
     dbSaldoTotal: TRLDBText;
+    procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
-    function sBuscarReceitas(dataini, datafin : TDateTime; nItem : Integer) : TClientDataSet;
-    function sBuscarDespesas(dataini, datafin : TDateTime; nItem : Integer) : TClientDataSet;
+    function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
+    function sBuscarDespesas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
     function sBuscarClasse(sClasse : String): String;
     function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): TContasBct;
   public
@@ -58,22 +59,21 @@ class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem
 var frmTelaRelatorio : TfrmTelaRelatorio;
   begin
       try
-
-      frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
-      frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
-      frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
-      frmTelaRelatorio.rpRelatorioDRF.Preview;  //IMPRIMINDO O RELATORIO
-    finally
-      frmTelaRelatorio.Free;
-  end;
+        frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
+        frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
+        frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
+        frmTelaRelatorio.rpRelatorioDRF.Preview;  //IMPRIMINDO O RELATORIO
+      finally
+        frmTelaRelatorio.Free;
+      end;
 end;
 
 //---------------------------------------------------------------------------------------------------------------------------
 
-function TfrmTelaRelatorio.sBuscarReceitas(dataini, datafin : TDateTime; nItem : Integer) : TClientDataSet;
+function TfrmTelaRelatorio.sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
 var
 sPos,sDescricao : String;
-saldoTotal : Double;             //FUNCTION PARA BUSCAR APENAS AS RECEITAS
+saldoTotal : Double;             //FUNCTION PARA BUSCAR OS DADOS
 qry : TFDQuery ;
 contas : TContasBct;
 i : Integer ;
@@ -82,8 +82,8 @@ i : Integer ;
       cds := TClientDataSet.Create(nil);
       cds.Close;
       CDS.FieldDefs.Clear;
-      cds.FieldDefs.Add('TIPO',ftString,2);
-      cds.FieldDefs.Add('TIPODESC',ftString,120);
+      cds.FieldDefs.Add('AS',ftString,1);
+      CDS.FieldDefs.Add('NIVEL',ftInteger);
       cds.FieldDefs.Add('CLASSE',ftString,5);
       cds.FieldDefs.Add('NCLASSE',ftString,100);
       cds.FieldDefs.Add('DESCRICAO',ftString,100);
@@ -128,7 +128,7 @@ i : Integer ;
           begin
             pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
             cds.Append;
-            cds.FieldByName('TIPO').AsString := 'R';
+            cds.FieldByName('AS').AsString := 'A';
             cds.FieldByName('CLASSE').AsString := qry.FieldByName('classe').AsString;
             cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
             cds.FieldByName('SALDO').AsFloat := qry.FieldByName('SALDO').AsFloat;
@@ -138,7 +138,7 @@ i : Integer ;
           for I := 0 to Length(contas)-1 do
           begin
             cds.Append;
-            cds.FieldByName('TIPO').AsString := 'R';
+            cds.FieldByName('AS').AsString := 'S';
             cds.FieldByName('CLASSE').AsString := contas[i].classificacao;
             cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
             cds.FieldByName('SALDO').AsFloat := contas[i].valor;
@@ -151,7 +151,7 @@ i : Integer ;
       result := cds;
   end;
 
-function TfrmTelaRelatorio.sBuscarDespesas(dataini ,datafin : TDateTime; nItem : Integer) : TClientDataSet; //FUNCTION PARA BUSCAR AS DESPESAS
+function TfrmTelaRelatorio.sBuscarDespesas(dataini ,datafin : TDate; nItem : Integer) : TClientDataSet; //FUNCTION PARA BUSCAR AS DESPESAS
   var qry : TFDQuery;
   var sPos : String;
     begin
@@ -211,14 +211,14 @@ begin
   bOk := false ;
   for I := 0 to Length(contas) - 1 do
   begin
-    if pos(contas[i].classificacao,sClass) > 0 then
+    if copy(sClass,1,length(contas[i].classificacao)) = contas[i].classificacao then
     begin
           contas[i].valor := contas[i].valor + valor;
           bOk := true ;
     end;
   end;
   if NOT bOk  then
-  begin
+  begin    // PEGAR RECEITA OU DESPESA
       qry := TFDQuery.Create(nil);
       qry.Connection := frm_dataModule.FDConnection1;
       p := Copy(sClass,1,1);
@@ -233,18 +233,37 @@ begin
       begin
           if Pos(qry.FieldByName('class').AsString, sClass) > 0 then
           begin
-              SetLength( contas, length(contas)+1 );
+            if (qry.FieldByName('class').AsString <> sClass) then
+              begin
+              SetLength( contas, length(contas) + 1 );
               idx := length(contas)-1 ;
               contas[idx].conta := qry.FieldByName('conta').AsInteger;
               contas[idx].classificacao := qry.FieldByName('class').AsString;
               contas[idx].nome := qry.FieldByName('nomeconta').AsString;
               contas[idx].valor := valor;
+              contas[idx].nivel := Length(qry.FieldByName('class').AsString);
+              end
           end;
           qry.Next;
       end;
       qry.free;
   end;
   result := contas ;
+end;
+
+procedure TfrmTelaRelatorio.RLBand2BeforePrint(Sender: TObject;
+  var PrintIt: Boolean);
+begin
+  if dsDrf.DataSet.FieldByName('AS').AsString = 'S' then
+    begin
+      dbConta.Font.Style := [fsBold];
+      dbSaldoTotal.Font.Style := [fsBold];
+    end
+  else
+    BEGIN
+      dbConta.Font.Style := [];
+      dbSaldoTotal.Font.Style := [];
+    END;
 end;
 
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;
