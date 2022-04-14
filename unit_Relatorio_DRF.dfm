@@ -46,6 +46,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Borders.DrawTop = False
         Borders.DrawRight = False
         Borders.DrawBottom = False
+        Layout = tlCenter
         object RLLabel1: TRLLabel
           Left = 84
           Top = 7

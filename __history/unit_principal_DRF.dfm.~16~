@@ -30,13 +30,28 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     ParentFont = False
     Layout = tlCenter
   end
+  object Label2: TLabel
+    Left = 14
+    Top = 44
+    Width = 57
+    Height = 13
+    AutoSize = False
+    Caption = 'Per'#237'odo:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Layout = tlCenter
+  end
   object btImprimir: TButton
     Left = 143
     Top = 168
     Width = 75
     Height = 25
     Caption = 'Imprimir'
-    TabOrder = 2
+    TabOrder = 3
     OnClick = btImprimirClick
   end
   object dataini: TMaskEdit
@@ -75,12 +90,15 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     TabOrder = 1
     Text = '  /  /    '
   end
-  object ListBox1: TListBox
-    Left = 21
+  object comboBoxPeriodo: TComboBox
+    Left = 14
     Top = 63
-    Width = 121
-    Height = 97
-    ItemHeight = 13
-    TabOrder = 3
+    Width = 145
+    Height = 21
+    TabOrder = 2
+    Text = 'Data de lan'#231'amento'
+    Items.Strings = (
+      'Data de pagamento '
+      'Data de lan'#231'amento')
   end
 end
