@@ -51,7 +51,7 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     Width = 75
     Height = 25
     Caption = 'Imprimir'
-    TabOrder = 2
+    TabOrder = 3
     OnClick = btImprimirClick
   end
   object dataini: TMaskEdit
@@ -96,10 +96,9 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     Width = 145
     Height = 21
     ItemIndex = 0
-    TabOrder = 3
-    Text = 'Data de vencimento'
+    TabOrder = 2
+    Text = 'Data de lan'#231'amento'
     Items.Strings = (
-      'Data de vencimento'
       'Data de lan'#231'amento'
       'Data de pagamento ')
   end
