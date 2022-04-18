@@ -33,20 +33,11 @@ type
     RLLabel5: TRLLabel;
     RLLabel6: TRLLabel;
     RLLabel7: TRLLabel;
-    RLLabel8: TRLLabel;
     labelNomeEmpresa: TRLLabel;
     RLBand2: TRLBand;
     dbConta: TRLDBText;
     dbSaldoTotal: TRLDBText;
-    RLDBText5: TRLDBText;
-    RLLabel10: TRLLabel;
-    RLLabel11: TRLLabel;
-    RLLabel12: TRLLabel;
-    RLLabel13: TRLLabel;
-    RLDBText6: TRLDBText;
-    RLDBText3: TRLDBText;
-    RLDBText4: TRLDBText;
-    RLDBText1: TRLDBText;
+    RLLabel14: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
