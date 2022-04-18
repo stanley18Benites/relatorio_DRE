@@ -101,58 +101,59 @@ i : Integer ;
       //-----------------------------------------------------------------------------------------
       qry.Close;
       qry.SQL.Clear;
-      //SQL PARA BUSCAR O NOME DA EMPRESA
-      qry.SQL.Add('SELECT estabelecimento.NOME');
+      qry.SQL.Add('SELECT estabelecimento.NOME'); //SQL PARA BUSCAR O NOME DA EMPRESA
       qry.SQL.Add('FROM estabelecimento');
       qry.Open;
       labelNomeEmpresa.Caption := qry.FieldByName('NOME').AsString; // ATRIBUIR O NOME DA VARIAVEL COM O NOME DA EMPRESA
-                                                                    //
+
       qry.Close;
       qry.SQL.Clear;
 
-        qry.SQL.Add('select cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
-        qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
-        qry.SQL.Add('from caixa ');
-        qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID ');
-      if nItem = 0  then   // SE O USUARIO SELECIONAR PARA FILTRAR POR DATA DE VENCIMENTO, IRA USAR ESSE SQL
+      qry.SQL.Add('select cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
+      qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
+      qry.SQL.Add('from caixa ');
+      qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID ');
+
+      if nItem = 0  then   //FILTRAR POR DATA DE PAGAMENTO
         qry.SQL.Add('where caixa.DATAPAGTO>=:dataini and caixa.DATAPAGTO<=:datafin '); //AND caixa.TIPO="E"
-      if nItem = 1  then
-        qry.SQL.Add('where caixa.DATALANC>=:dataini and caixa.DATALANC<=:datafin '); // AND caixa.TIPO="E"
-        qry.SQL.Add('group by caixa.CONTA_ID ');
-        qry.SQL.Add('order by cadplanoconta.CLASS ');
-        qry.ParamByName('dataini').AsDate := dataini;
-        qry.ParamByName('datafin').AsDate := datafin;
-        qry.Open;
-        cds.Open;
+      if nItem = 1  then   //FILTRAR POR DATA DE LANCAMENTO
+        qry.SQL.Add('where caixa.DATALANC>=:dataini and caixa.DATALANC<=:datafin '); // AND caixa.TIPO="E".
 
-        while not qry.EOF do    // ADICIONAR OS DADOS DO SELECT NO CLIENTDATASET
-          begin
-            pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
+      qry.SQL.Add('group by caixa.CONTA_ID ');
+      qry.SQL.Add('order by cadplanoconta.CLASS ');
+      qry.ParamByName('dataini').AsDate := dataini;
+      qry.ParamByName('datafin').AsDate := datafin;
+      qry.Open;
+      cds.Open;
+
+      while not qry.EOF do    // ADICIONAR OS DADOS DO SELECT NO CLIENTDATASET
+        begin
+          pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
+          cds.Append;
+          cds.FieldByName('AS').AsString := 'A';
+          cds.FieldByName('CLASSE').AsString := qry.FieldByName('classe').AsString;
+          cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
+          cds.FieldByName('SALDO').AsFloat := qry.FieldByName('SALDO').AsFloat;
+          cds.Post;
+          qry.Next;
+        end;
+        for I := 0 to Length(contas)-1 do
+        begin
+          if copy(qry.FieldByName('classe').AsString,1,length(contas[i].classificacao)) = contas[i].classificacao then
+            begin
             cds.Append;
-            cds.FieldByName('AS').AsString := 'A';
-            cds.FieldByName('CLASSE').AsString := qry.FieldByName('classe').AsString;
-            cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
-            cds.FieldByName('SALDO').AsFloat := qry.FieldByName('SALDO').AsFloat;
+            cds.FieldByName('AS').AsString := 'S';
+            cds.FieldByName('CLASSE').AsString := contas[i].classificacao;
+            cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
+            cds.FieldByName('SALDO').AsFloat := contas[i].valor;
             cds.Post;
-            qry.Next;
-          end;
-          for I := 0 to Length(contas)-1 do
-          begin
-             if copy(qry.FieldByName('classe').AsString,1,length(contas[i].classificacao)) = contas[i].classificacao then
-              begin
-              cds.Append;
-              cds.FieldByName('AS').AsString := 'S';
-              cds.FieldByName('CLASSE').AsString := contas[i].classificacao;
-              cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
-              cds.FieldByName('SALDO').AsFloat := contas[i].valor;
-              cds.Post;
-              end;
-          end;
+            end;
+        end;
 
-          //sBuscarDespesas(dataini,datafin,1);
-     finally
+        //sBuscarDespesas(dataini,datafin,1);
+    finally
     end;
-      result := cds;
+    result := cds;
   end;
 
 function TfrmTelaRelatorio.sBuscarDespesas(dataini ,datafin : TDate; nItem : Integer) : TClientDataSet; //FUNCTION PARA BUSCAR AS DESPESAS
@@ -233,6 +234,7 @@ begin
   qry.SQL.Clear;
   qry.SQL.Add('SELECT conta, class, nomeconta');
   qry.SQL.Add('FROM cadplanoconta');
+  //qry.SQL.Add('WHERE cadplanoconta.SA = "S"');
   qry.Open;
   i := 0 ;
   while NOT qry.Eof do

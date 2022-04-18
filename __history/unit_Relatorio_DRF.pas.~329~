@@ -43,7 +43,7 @@ type
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
     function sBuscarDespesas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
     function sBuscarClasse(sClasse : String): String;
-    function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): TContasBct;
+    function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): Integer;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
@@ -79,6 +79,7 @@ qry : TFDQuery ;
 contas : TContasBct;
 i : Integer ;
   begin
+    contas := nil ;
     try   //funcao para criar o clientdataset
       cds := TClientDataSet.Create(nil);
       cds.Close;
@@ -101,64 +102,63 @@ i : Integer ;
       //-----------------------------------------------------------------------------------------
       qry.Close;
       qry.SQL.Clear;
-      //SQL PARA BUSCAR O NOME DA EMPRESA
-      qry.SQL.Add('SELECT estabelecimento.NOME');
+      qry.SQL.Add('SELECT estabelecimento.NOME'); //SQL PARA BUSCAR O NOME DA EMPRESA
       qry.SQL.Add('FROM estabelecimento');
       qry.Open;
       labelNomeEmpresa.Caption := qry.FieldByName('NOME').AsString; // ATRIBUIR O NOME DA VARIAVEL COM O NOME DA EMPRESA
-                                                                    //
+
       qry.Close;
       qry.SQL.Clear;
 
-        qry.SQL.Add('select cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
-        qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
-        qry.SQL.Add('from caixa ');
-        qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID ');
-      if nItem = 0  then   // SE O USUARIO SELECIONAR PARA FILTRAR POR DATA DE VENCIMENTO, IRA USAR ESSE SQL
+      qry.SQL.Add('select cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
+      qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
+      qry.SQL.Add('from caixa ');
+      qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID ');
+
+      if nItem = 0  then   //FILTRAR POR DATA DE PAGAMENTO
         qry.SQL.Add('where caixa.DATAPAGTO>=:dataini and caixa.DATAPAGTO<=:datafin '); //AND caixa.TIPO="E"
-      if nItem = 1  then
-        qry.SQL.Add('where caixa.DATALANC>=:dataini and caixa.DATALANC<=:datafin '); // AND caixa.TIPO="E"
-        qry.SQL.Add('group by caixa.CONTA_ID ');
-        qry.SQL.Add('order by cadplanoconta.CLASS ');
-        qry.ParamByName('dataini').AsDate := dataini;
-        qry.ParamByName('datafin').AsDate := datafin;
-        qry.Open;
-        cds.Open;
+      if nItem = 1  then   //FILTRAR POR DATA DE LANCAMENTO
+        qry.SQL.Add('where caixa.DATALANC>=:dataini and caixa.DATALANC<=:datafin '); // AND caixa.TIPO="E".
 
-        while not qry.EOF do    // ADICIONAR OS DADOS DO SELECT NO CLIENTDATASET
-          begin
-            pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
+      qry.SQL.Add('group by caixa.CONTA_ID ');
+      qry.SQL.Add('order by cadplanoconta.CLASS ');
+      qry.ParamByName('dataini').AsDate := dataini;
+      qry.ParamByName('datafin').AsDate := datafin;
+      qry.Open;
+      cds.Open;
+
+      while not qry.EOF do    // ADICIONAR OS DADOS DO SELECT NO CLIENTDATASET
+      begin
+          pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
+          cds.Append;
+          cds.FieldByName('AS').AsString := 'A';
+          cds.FieldByName('CLASSE').AsString := qry.FieldByName('classe').AsString;
+          cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
+          cds.FieldByName('SALDO').AsFloat := qry.FieldByName('SALDO').AsFloat;
+          cds.Post;
+          qry.Next;
+      end;
+      for I := 0 to Length(contas)-1 do
+      begin
+        if copy(qry.FieldByName('classe').AsString,1,length(contas[i].classificacao)) = contas[i].classificacao then
+           // if cds.Locate(qry.FieldByName('classe').AsString, cds.FieldByName('classe').AsString) then
+        begin
             cds.Append;
-            cds.FieldByName('AS').AsString := 'A';
-            cds.FieldByName('CLASSE').AsString := qry.FieldByName('classe').AsString;
-            cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
-            cds.FieldByName('SALDO').AsFloat := qry.FieldByName('SALDO').AsFloat;
+            cds.FieldByName('AS').AsString := 'S';
+            cds.FieldByName('CLASSE').AsString := contas[i].classificacao;
+            cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
+            cds.FieldByName('SALDO').AsFloat := contas[i].valor;
             cds.Post;
-            qry.Next;
-          end;
-          for I := 0 to Length(contas)-1 do
-          begin
-             if copy(qry.FieldByName('classe').AsString,1,length(contas[i].classificacao)) = contas[i].classificacao then
-              begin
-                if contas[i].classificacao.CompareText(qry.FieldByName('DESCRICAO').AsString) > 0 then
-                  BEGIN
-                  cds.Append;
-                  cds.FieldByName('AS').AsString := 'S';
-                  cds.FieldByName('CLASSE').AsString := contas[i].classificacao;
-                  cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
-                  cds.FieldByName('SALDO').AsFloat := contas[i].valor;
-                  cds.Post;
-                  END;
-              end;
-          end;
+        end;
+      end;
 
-          //sBuscarDespesas(dataini,datafin,1);
-     finally
+        //sBuscarDespesas(dataini,datafin,1);
+    finally
     end;
-      result := cds;
+    result := cds;
   end;
 
-function TfrmTelaRelatorio.sBuscarDespesas(dataini ,datafin : TDate; nItem : Integer) : TClientDataSet; //FUNCTION PARA BUSCAR AS DESPESAS
+ function TfrmTelaRelatorio.sBuscarDespesas(dataini ,datafin : TDate; nItem : Integer) : TClientDataSet; //FUNCTION PARA BUSCAR AS DESPESAS
   var qry : TFDQuery;
   var sPos : String;
     begin
@@ -222,7 +222,7 @@ begin
   end;
 end;
 
-function TfrmTelaRelatorio.pegarContas(sClass: string; var contas : TContasBct; valor : Currency): TContasBct;
+function TfrmTelaRelatorio.pegarContas(sClass: string; var contas : TContasBct; valor : Currency): Integer;
 var qry: TFDQuery;
   p : String;
   idx : Integer ;
@@ -230,27 +230,39 @@ var qry: TFDQuery;
   bOk : boolean ;
 
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := frm_dataModule.FDConnection1;
-  qry.Close;
-  qry.SQL.Clear;
-  qry.SQL.Add('SELECT conta, class, nomeconta');
-  qry.SQL.Add('FROM cadplanoconta');
-  qry.Open;
-  i := 0 ;
-  while NOT qry.Eof do
+  for I := 0 to Length(contas) do
+  begin
+     if copy(sClass,1,length(contas[i].classificacao)) = contas[i].classificacao then
+     begin
+       contas[i].valor := contas[i].valor + valor;
+     end;
+  end;
+  if Length(contas) > 0 then
     begin
-    SetLength( contas, length(contas) + 1 );
-    idx                       := length(contas)-1 ;
-    contas[idx].conta         := qry.FieldByName('conta').AsInteger;
-    contas[idx].classificacao := qry.FieldByName('class').AsString;
-    contas[idx].nome          := qry.FieldByName('nomeconta').AsString;
-    contas[idx].valor         := 0.00;
-    contas[idx].nivel         := Length(qry.FieldByName('class').AsString);
-    qry.Next;
-    end;
+    qry := TFDQuery.Create(nil);
+    qry.Connection := frm_dataModule.FDConnection1;
+    qry.Close;
+    qry.SQL.Clear;
+    qry.SQL.Add('SELECT conta, class, nomeconta');
+    qry.SQL.Add('FROM cadplanoconta');
+    qry.SQL.Add('WHERE cadplanoconta.SA = "S"');
+    qry.Open;
+    i := 0 ;
+    while NOT qry.Eof do
+      begin
+      SetLength( contas, length(contas) + 1 );
+      idx                       := length(contas)-1 ;
+      contas[idx].conta         := qry.FieldByName('conta').AsInteger;
+      contas[idx].classificacao := qry.FieldByName('class').AsString;
+      contas[idx].nome          := qry.FieldByName('nomeconta').AsString;
+      contas[idx].valor         := 0.00;
+      contas[idx].nivel         := Length(qry.FieldByName('class').AsString);
+      qry.Next;
+      end;
+    end ;
+
   qry.free;
-  result := contas ;
+  result := 0;
 end;
 
 procedure TfrmTelaRelatorio.RLBand2BeforePrint(Sender: TObject;
