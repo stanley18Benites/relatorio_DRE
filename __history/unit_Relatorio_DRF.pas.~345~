@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, RLReport, DBClient, DB, FireDAC.Comp.Client;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, RLReport, DBClient, DB, FireDAC.Comp.Client, Vcl.Controls;
 
 type
   TContaBct = record
@@ -33,11 +33,12 @@ type
     RLLabel5: TRLLabel;
     RLLabel6: TRLLabel;
     RLLabel7: TRLLabel;
-    RLLabel8: TRLLabel;
     labelNomeEmpresa: TRLLabel;
     RLBand2: TRLBand;
     dbConta: TRLDBText;
     dbSaldoTotal: TRLDBText;
+    RLLabel14: TRLLabel;
+    RLLabel8: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
@@ -280,8 +281,12 @@ begin
       dbConta.Font.Style := [];
       dbSaldoTotal.Font.Style := [];
     END;
-  if  Length(cds.FieldByName('NIVEL').AsInteger) > 1 then
-
+  //if  cds.FieldByName('NIVEL').AsInteger < 1 then
+    //begin
+      dbConta.setMargins.Left := 6 ;
+  //    dbSaldoTotal.Margins.Left := 10000000 ;
+//      rpRelatorioDRF.Margins.LeftMargin := 0 ;
+    //end;
 end;
 
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;

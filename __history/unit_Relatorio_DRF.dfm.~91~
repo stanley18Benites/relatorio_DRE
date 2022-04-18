@@ -29,6 +29,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     Font.Height = -13
     Font.Name = 'Arial'
     Font.Style = []
+    NextReport = frm_nextPage.rpRelatorioDRF
     PageSetup.Orientation = poLandscape
     object RLBand1: TRLBand
       Left = 8
@@ -39,17 +40,18 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       object RLPanel1: TRLPanel
         Left = 0
         Top = 0
-        Width = 1047
+        Width = 1107
         Height = 32
         Borders.Sides = sdCustom
         Borders.DrawLeft = False
         Borders.DrawTop = False
         Borders.DrawRight = False
         Borders.DrawBottom = False
+        Layout = tlCenter
         object RLLabel1: TRLLabel
-          Left = 84
-          Top = 7
-          Width = 1048
+          Left = 0
+          Top = 0
+          Width = 1107
           Height = 22
           Alignment = taCenter
           AutoSize = False
@@ -71,7 +73,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       object RLPanel2: TRLPanel
         Left = 0
         Top = 38
-        Width = 1047
+        Width = 1107
         Height = 34
         Borders.Sides = sdCustom
         Borders.DrawLeft = True
@@ -242,33 +244,18 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
       end
-      object RLLabel8: TRLLabel
-        Left = 311
-        Top = 72
-        Width = 47
-        Height = 16
-        AutoSize = False
-        Caption = '%'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -12
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        Layout = tlCenter
-        ParentFont = False
-      end
     end
     object RLBand2: TRLBand
       Left = 8
       Top = 112
       Width = 1107
-      Height = 16
+      Height = 15
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 0
         Top = 1
         Width = 239
-        Height = 14
+        Height = 13
         AutoSize = False
         DataField = 'DESCRICAO'
         DataSource = dsDRF
@@ -284,12 +271,12 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       object dbSaldoTotal: TRLDBText
         Left = 240
         Top = 1
-        Width = 71
-        Height = 14
+        Width = 82
+        Height = 13
         AutoSize = False
         DataField = 'SALDO'
         DataSource = dsDRF
-        DisplayMask = '#,##0.00'
+        DisplayMask = 'R$ #,##0.00'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -299,11 +286,26 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
         Text = ''
       end
+      object RLLabel14: TRLLabel
+        Left = 327
+        Top = 0
+        Width = 38
+        Height = 14
+        AutoSize = False
+        Caption = '%'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -12
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        Layout = tlCenter
+        ParentFont = False
+      end
     end
   end
   object dsDRF: TDataSource
     DataSet = frm_dataModule.FDQuery1
     Left = 14
-    Top = 14
+    Top = 11
   end
 end

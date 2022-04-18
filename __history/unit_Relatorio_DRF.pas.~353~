@@ -33,20 +33,12 @@ type
     RLLabel5: TRLLabel;
     RLLabel6: TRLLabel;
     RLLabel7: TRLLabel;
-    RLLabel8: TRLLabel;
     labelNomeEmpresa: TRLLabel;
     RLBand2: TRLBand;
     dbConta: TRLDBText;
     dbSaldoTotal: TRLDBText;
-    RLDBText5: TRLDBText;
-    RLLabel10: TRLLabel;
-    RLLabel11: TRLLabel;
-    RLLabel12: TRLLabel;
-    RLLabel13: TRLLabel;
-    RLDBText6: TRLDBText;
-    RLDBText3: TRLDBText;
-    RLDBText4: TRLDBText;
-    RLDBText1: TRLDBText;
+    RLLabel14: TRLLabel;
+    RLLabel8: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
@@ -59,7 +51,7 @@ type
   end;
 
 implementation
- uses unit_DataModule_DRF, unit_nextPage;
+ uses unit_DataModule_DRF;
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
 {$R *.dfm}
@@ -77,6 +69,9 @@ var frmTelaRelatorio : TfrmTelaRelatorio;
         frmTelaRelatorio.Free;
       end;
 end;
+
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------
 
@@ -289,8 +284,11 @@ begin
       dbConta.Font.Style := [];
       dbSaldoTotal.Font.Style := [];
     END;
-  //if  Length(cds.FieldByName('NIVEL').AsInteger) > 1 then
-
+  //if  cds.FieldByName('NIVEL').AsInteger < 1 then
+    //begin
+    dbSaldoTotal.Margins.Left := 10 ;
+//      rpRelatorioDRF.Margins.LeftMargin := 0 ;
+    //end;
 end;
 
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;

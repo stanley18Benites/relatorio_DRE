@@ -3,7 +3,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
   Top = 0
   Caption = 'frmRelatorio'
   ClientHeight = 460
-  ClientWidth = 1134
+  ClientWidth = 814
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
   object rpRelatorioDRF: TRLReport
     Left = 0
     Top = 0
-    Width = 1123
-    Height = 794
+    Width = 794
+    Height = 1123
     Margins.LeftMargin = 2.000000000000000000
     Margins.TopMargin = 5.000000000000000000
     Margins.RightMargin = 2.000000000000000000
@@ -29,12 +29,10 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     Font.Height = -13
     Font.Name = 'Arial'
     Font.Style = []
-    NextReport = frm_nextPage.rpRelatorioDRF
-    PageSetup.Orientation = poLandscape
     object RLBand1: TRLBand
       Left = 8
       Top = 19
-      Width = 1107
+      Width = 778
       Height = 93
       BandType = btHeader
       object RLPanel1: TRLPanel
@@ -51,7 +49,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         object RLLabel1: TRLLabel
           Left = 0
           Top = 0
-          Width = 1107
+          Width = 778
           Height = 22
           Alignment = taCenter
           AutoSize = False
@@ -73,7 +71,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       object RLPanel2: TRLPanel
         Left = 0
         Top = 38
-        Width = 1107
+        Width = 778
         Height = 34
         Borders.Sides = sdCustom
         Borders.DrawLeft = True
@@ -230,12 +228,27 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
       end
       object RLLabel7: TRLLabel
-        Left = 240
-        Top = 72
-        Width = 50
+        Left = 577
+        Top = 74
+        Width = 82
         Height = 16
         AutoSize = False
         Caption = 'Saldo'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -12
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        Layout = tlCenter
+        ParentFont = False
+      end
+      object RLLabel8: TRLLabel
+        Left = 737
+        Top = 71
+        Width = 38
+        Height = 16
+        AutoSize = False
+        Caption = '%'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -12
@@ -248,14 +261,14 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     object RLBand2: TRLBand
       Left = 8
       Top = 112
-      Width = 1107
+      Width = 778
       Height = 15
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 0
-        Top = 1
-        Width = 239
-        Height = 13
+        Top = 0
+        Width = 320
+        Height = 12
         AutoSize = False
         DataField = 'DESCRICAO'
         DataSource = dsDRF
@@ -269,10 +282,11 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Text = ''
       end
       object dbSaldoTotal: TRLDBText
-        Left = 240
-        Top = 1
+        Left = 577
+        Top = -1
         Width = 82
         Height = 13
+        Alignment = taRightJustify
         AutoSize = False
         DataField = 'SALDO'
         DataSource = dsDRF
@@ -287,10 +301,10 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Text = ''
       end
       object RLLabel14: TRLLabel
-        Left = 327
-        Top = 0
+        Left = 737
+        Top = -1
         Width = 38
-        Height = 14
+        Height = 13
         AutoSize = False
         Caption = '%'
         Font.Charset = DEFAULT_CHARSET

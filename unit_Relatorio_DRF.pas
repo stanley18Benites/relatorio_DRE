@@ -38,6 +38,7 @@ type
     dbConta: TRLDBText;
     dbSaldoTotal: TRLDBText;
     RLLabel14: TRLLabel;
+    RLLabel8: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
@@ -50,7 +51,7 @@ type
   end;
 
 implementation
- uses unit_DataModule_DRF, unit_nextPage;
+ uses unit_DataModule_DRF;
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
 {$R *.dfm}
@@ -68,6 +69,9 @@ var frmTelaRelatorio : TfrmTelaRelatorio;
         frmTelaRelatorio.Free;
       end;
 end;
+
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------
 
@@ -279,9 +283,13 @@ begin
     BEGIN
       dbConta.Font.Style := [];
       dbSaldoTotal.Font.Style := [];
+      dbSaldoTotal.Margins.Left := 10px ;
     END;
-  //if  Length(cds.FieldByName('NIVEL').AsInteger) > 1 then
+  //if  cds.FieldByName('NIVEL').AsInteger < 1 then
+    //begin
 
+//      rpRelatorioDRF.Margins.LeftMargin := 0 ;
+    //end;
 end;
 
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;

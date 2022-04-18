@@ -33,11 +33,12 @@ type
     RLLabel5: TRLLabel;
     RLLabel6: TRLLabel;
     RLLabel7: TRLLabel;
-    RLLabel8: TRLLabel;
     labelNomeEmpresa: TRLLabel;
     RLBand2: TRLBand;
     dbConta: TRLDBText;
     dbSaldoTotal: TRLDBText;
+    RLLabel14: TRLLabel;
+    RLLabel8: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
@@ -68,6 +69,9 @@ var frmTelaRelatorio : TfrmTelaRelatorio;
         frmTelaRelatorio.Free;
       end;
 end;
+
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------
 
@@ -131,23 +135,25 @@ i : Integer ;
       begin
           pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
           cds.Append;
-          cds.FieldByName('AS').AsString := 'A';
-          cds.FieldByName('CLASSE').AsString := qry.FieldByName('classe').AsString;
+          cds.FieldByName('AS').AsString        := 'A';
+          cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;
           cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
-          cds.FieldByName('SALDO').AsFloat := qry.FieldByName('SALDO').AsFloat;
+          cds.FieldByName('SALDO').AsFloat      := qry.FieldByName('SALDO').AsFloat;
+//          cds.FieldByName('NIVEL').AsInteger    :=
           cds.Post;
           qry.Next;
       end;
       for I := 0 to Length(contas)-1 do
       begin
-        if copy(qry.FieldByName('classe').AsString,1,length(contas[i].classificacao)) = contas[i].classificacao then
+        if contas[i].valor > 0 then
            // if cds.Locate(qry.FieldByName('classe').AsString, cds.FieldByName('classe').AsString) then
         begin
             cds.Append;
-            cds.FieldByName('AS').AsString := 'S';
-            cds.FieldByName('CLASSE').AsString := contas[i].classificacao;
+            cds.FieldByName('AS').AsString        := 'S';
+            cds.FieldByName('CLASSE').AsString    := contas[i].classificacao;
             cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
-            cds.FieldByName('SALDO').AsFloat := contas[i].valor;
+            cds.FieldByName('SALDO').AsFloat      := contas[i].valor;
+            cds.FieldByName('NIVEL').AsInteger    := contas[i].nivel ;
             cds.Post;
         end;
       end;
@@ -230,14 +236,7 @@ var qry: TFDQuery;
   bOk : boolean ;
 
 begin
-  for I := 0 to Length(contas) - 1 do
-  begin
-     if copy(sClass,1,length(contas[i].classificacao)) = contas[i].classificacao then
-     begin
-       contas[i].valor := contas[i].valor + valor;
-     end;
-  end;
-  if Length(contas) > 0 then
+  if Length(contas)=0 then
   begin
     qry := TFDQuery.Create(nil);
     qry.Connection := frm_dataModule.FDConnection1;
@@ -261,6 +260,13 @@ begin
     end;
   qry.free;
   end ;
+  for I := 0 to Length(contas) - 1 do
+  begin
+     if copy(sClass,1,length(contas[i].classificacao)) = contas[i].classificacao then
+     begin
+       contas[i].valor := contas[i].valor + valor;
+     end;
+  end;
 
   result := 0;
 end;
@@ -277,7 +283,13 @@ begin
     BEGIN
       dbConta.Font.Style := [];
       dbSaldoTotal.Font.Style := [];
+      dbSaldoTotal.Margins.Left := 10 ;
     END;
+  //if  cds.FieldByName('NIVEL').AsInteger < 1 then
+    //begin
+
+//      rpRelatorioDRF.Margins.LeftMargin := 0 ;
+    //end;
 end;
 
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;
