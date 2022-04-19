@@ -54,6 +54,7 @@ implementation
  uses unit_DataModule_DRF;
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
+ var count : Integer ;
 {$R *.dfm}
 
 class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem : Integer);
@@ -84,6 +85,7 @@ contas : TContasBct;
 i : Integer ;
   begin
     contas := nil ;
+    count := 0 ;
     try   //funcao para criar o clientdataset
       cds := TClientDataSet.Create(nil);
       cds.Close;
@@ -139,7 +141,7 @@ i : Integer ;
           cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;
           cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
           cds.FieldByName('SALDO').AsFloat      := qry.FieldByName('SALDO').AsFloat;
-//          cds.FieldByName('NIVEL').AsInteger    :=
+          cds.FieldByName('NIVEL').AsInteger    :=  4;
           cds.Post;
           qry.Next;
       end;
@@ -275,21 +277,33 @@ procedure TfrmTelaRelatorio.RLBand2BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
   if dsDrf.DataSet.FieldByName('AS').AsString = 'S' then
-    begin
-      dbConta.Font.Style := [fsBold];
-      dbSaldoTotal.Font.Style := [fsBold];
-    end
+  begin
+    dbConta.Font.Style := [fsBold];
+    dbSaldoTotal.Font.Style := [fsBold];
+  end
   else
-    BEGIN
-      dbConta.Font.Style := [];
-      dbSaldoTotal.Font.Style := [];
-      dbSaldoTotal.Margins.Left := 10px ;
-    END;
-  //if  cds.FieldByName('NIVEL').AsInteger < 1 then
-    //begin
-
-//      rpRelatorioDRF.Margins.LeftMargin := 0 ;
-    //end;
+  begin
+    dbConta.Font.Style := [];
+    dbSaldoTotal.Font.Style := [];
+  end;
+  if cds.FieldByName('NIVEL').AsInteger = 3 then
+  begin
+    dbConta.Left := 5 ;
+  end
+  else if cds.FieldByName('NIVEL').AsInteger = 4 then
+  begin
+    dbConta.Left := 10 ;
+  end;
+  if count mod 2 = 0 then
+  begin
+    RLBand2.Color := $00DFDFDF;
+    count := count + 1 ;
+  end
+  else
+  begin
+    RLBand2.Color := clWhite;
+    count := count + 1 ;
+  end;
 end;
 
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;
