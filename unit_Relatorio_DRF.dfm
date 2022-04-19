@@ -305,11 +305,11 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Text = ''
         Transparent = False
       end
-      object RLLabel14: TRLLabel
+      object label_porcentagem: TRLLabel
         Left = 737
         Top = -1
         Width = 38
-        Height = 13
+        Height = 14
         AutoSize = False
         Caption = '%'
         Font.Charset = DEFAULT_CHARSET

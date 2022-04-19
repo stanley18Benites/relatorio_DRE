@@ -37,15 +37,15 @@ type
     RLBand2: TRLBand;
     dbConta: TRLDBText;
     dbSaldoTotal: TRLDBText;
-    RLLabel14: TRLLabel;
+    label_porcentagem: TRLLabel;
     RLLabel8: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
-    function sBuscarDespesas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
     function sBuscarClasse(sClasse : String): String;
     function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): Integer;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
+    function sBuscarPorcentagem(cds : TClientDataSet): Double;
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -54,6 +54,7 @@ implementation
  uses unit_DataModule_DRF;
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
+ var count : Integer ;
 {$R *.dfm}
 
 class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem : Integer);
@@ -70,9 +71,6 @@ var frmTelaRelatorio : TfrmTelaRelatorio;
       end;
 end;
 
-
-
-
 //---------------------------------------------------------------------------------------------------------------------------
 
 function TfrmTelaRelatorio.sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
@@ -84,6 +82,7 @@ contas : TContasBct;
 i : Integer ;
   begin
     contas := nil ;
+    count := 0 ;
     try   //funcao para criar o clientdataset
       cds := TClientDataSet.Create(nil);
       cds.Close;
@@ -91,10 +90,8 @@ i : Integer ;
       cds.FieldDefs.Add('AS',ftString,1);
       CDS.FieldDefs.Add('NIVEL',ftInteger);
       cds.FieldDefs.Add('CLASSE',ftString,5);
-      cds.FieldDefs.Add('NCLASSE',ftString,100);
       cds.FieldDefs.Add('DESCRICAO',ftString,100);
       cds.FieldDefs.Add('SALDO',ftFloat);
-      cds.FieldDefs.Add('SALDOTOTAL',ftFloat);
       cds.FieldDefs.Add('PORCENTAGEM',ftFloat);
       cds.CreateDataSet;  //criando o clientdataset com os fileds
       cds.IndexFieldNames := 'CLASSE' ;
@@ -118,12 +115,10 @@ i : Integer ;
       qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
       qry.SQL.Add('from caixa ');
       qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID ');
-
       if nItem = 0  then   //FILTRAR POR DATA DE PAGAMENTO
         qry.SQL.Add('where caixa.DATAPAGTO>=:dataini and caixa.DATAPAGTO<=:datafin '); //AND caixa.TIPO="E"
       if nItem = 1  then   //FILTRAR POR DATA DE LANCAMENTO
         qry.SQL.Add('where caixa.DATALANC>=:dataini and caixa.DATALANC<=:datafin '); // AND caixa.TIPO="E".
-
       qry.SQL.Add('group by caixa.CONTA_ID ');
       qry.SQL.Add('order by cadplanoconta.CLASS ');
       qry.ParamByName('dataini').AsDate := dataini;
@@ -133,88 +128,34 @@ i : Integer ;
 
       while not qry.EOF do    // ADICIONAR OS DADOS DO SELECT NO CLIENTDATASET
       begin
-          pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
-          cds.Append;
-          cds.FieldByName('AS').AsString        := 'A';
-          cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;
-          cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
-          cds.FieldByName('SALDO').AsFloat      := qry.FieldByName('SALDO').AsFloat;
-//          cds.FieldByName('NIVEL').AsInteger    :=
-          cds.Post;
-          qry.Next;
+        pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
+        cds.Append;
+        cds.FieldByName('AS').AsString        := 'A';
+        cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;
+        cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
+        cds.FieldByName('SALDO').AsFloat      := qry.FieldByName('SALDO').AsFloat;
+        cds.FieldByName('NIVEL').AsInteger    :=  4;
+        //cds.FieldByName('PORCENTAGEM').AsFloat:= sBuscarPorcentagem(cds.FieldByName('SALDO').AsFloat, contas);
+        cds.Post;
+        qry.Next;
       end;
       for I := 0 to Length(contas)-1 do
       begin
         if contas[i].valor > 0 then
-           // if cds.Locate(qry.FieldByName('classe').AsString, cds.FieldByName('classe').AsString) then
         begin
-            cds.Append;
-            cds.FieldByName('AS').AsString        := 'S';
-            cds.FieldByName('CLASSE').AsString    := contas[i].classificacao;
-            cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
-            cds.FieldByName('SALDO').AsFloat      := contas[i].valor;
-            cds.FieldByName('NIVEL').AsInteger    := contas[i].nivel ;
-            cds.Post;
+          cds.Append;
+          cds.FieldByName('AS').AsString        := 'S';
+          cds.FieldByName('CLASSE').AsString    := contas[i].classificacao;
+          cds.FieldByName('DESCRICAO').AsString := contas[i].nome;
+          cds.FieldByName('SALDO').AsFloat      := contas[i].valor;
+          cds.FieldByName('NIVEL').AsInteger    := contas[i].nivel ;
+          cds.Post;
         end;
       end;
-
-        //sBuscarDespesas(dataini,datafin,1);
     finally
     end;
     result := cds;
   end;
-
- function TfrmTelaRelatorio.sBuscarDespesas(dataini ,datafin : TDate; nItem : Integer) : TClientDataSet; //FUNCTION PARA BUSCAR AS DESPESAS
-  var qry : TFDQuery;
-  var sPos : String;
-    begin
-      try
-      //saldo := 0;
-        qry := TFDQuery.Create(nil);
-        qry.Connection := frm_dataModule.FDConnection1;
-        qry.Close;
-        qry.SQL.Clear;
-        qry.SQL.Add('select cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
-        qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
-        qry.SQL.Add('from caixa');
-        qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID');
-      if nItem = 0  then   // SE O USUARIO SELECIONAR PARA FILTRAR POR DATA DE VENCIMENTO, IRA USAR ESSE SQL
-        qry.SQL.Add('where caixa.DATAPAGTO>=:dataini and caixa.DATAPAGTO<=:datafin AND caixa.TIPO="S"');
-      if nItem = 1  then
-        qry.SQL.Add('where caixa.DATALANC>=:dataini and caixa.DATALANC<=:datafin AND caixa.TIPO="S"');
-        qry.SQL.Add('group by caixa.CONTA_ID ');
-        qry.SQL.Add('order by cadplanoconta.CLASS ');
-        qry.ParamByName('dataini').AsDate := dataini;
-        qry.ParamByName('datafin').AsDate := datafin;
-        qry.Open;
-        while not qry.EOF do   // ADICIONAR OS DADOS DO SELECT NO CLIENTDATASET
-          begin
-           if QRY.FieldByName('SALDO').AsFloat <> 0 then
-            begin
-              cds.Append;
-              cds.FieldByName('TIPO').AsString      := 'D';
-              cds.FieldByName('TIPODESC').AsString  := 'DESPESAS';
-              cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;          //qry.FieldByName('classe').AsString;
-              sPos := copy(cds.FieldByName('CLASSE').AsString,1,3);
-              cds.FieldByName('CLASSE').AsString := sBuscarClasse(sPos);
-              cds.FieldByName('NCLASSE').AsString    :=  sBuscarClasse(sPos);
-              cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('DESCRICAO').AsString;
-              cds.FieldByName('SALDO').AsString     := qry.FieldByName('SALDO').AsString;
-              //cds.FieldByName('SALDOTOTAL').AsFloat := saldo;
-              cds.Post;
-              qry.Next;
-            end
-            else
-             qry.Next;
-          end
-      finally
-        qry.SQL.Clear;
-        qry.Close;
-      end;
-      result := cds;
-    end;
-
-
 function TfrmTelaRelatorio.atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean;
 var i : integer ;
 begin
@@ -227,7 +168,6 @@ begin
     end;
   end;
 end;
-
 function TfrmTelaRelatorio.pegarContas(sClass: string; var contas : TContasBct; valor : Currency): Integer;
 var qry: TFDQuery;
   p : String;
@@ -270,7 +210,6 @@ begin
 
   result := 0;
 end;
-
 procedure TfrmTelaRelatorio.RLBand2BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
@@ -284,21 +223,33 @@ begin
     dbConta.Font.Style := [];
     dbSaldoTotal.Font.Style := [];
   end;
-  if cds.FieldByName('NIVEL').AsInteger >= 1 then
+  if cds.FieldByName('NIVEL').AsInteger = 3 then
   begin
-    if cds.FieldByName('NIVEL').AsInteger <= 2  then
-      dbConta.Left := 5 ;
+    dbConta.Left := 5 ;
+    label_porcentagem.Caption := '0%';
   end
-  else if  cds.FieldByName('NIVEL').AsInteger <= 4 then
+  else if cds.FieldByName('NIVEL').AsInteger = 4 then
   begin
-    dbConta.Left := 7 ;
+    dbConta.Left := 10 ;
+    label_porcentagem.Caption := '0%';
+  end
+  else if cds.FieldByName('NIVEL').AsInteger = 1 then
+  begin
+    label_porcentagem.Caption := '100%';
+  end;
+  if count mod 2 = 0 then
+  begin
+    RLBand2.Color := $00DFDFDF;
+    count := count + 1 ;
   end
   else
-  //begin
-    //rpRelatorioDRF.Margins.LeftMargin := 0 ;
-  //end;
-end;
+  begin
+    RLBand2.Color := clWhite;
+    count := count + 1 ;
+  end;
 
+  sBuscarPorcentagem(cds);
+end;
 function TfrmTelaRelatorio.sBuscarClasse(sClasse : String) : String ;
 var qry : TFDQuery;
   begin
@@ -319,4 +270,16 @@ var qry : TFDQuery;
       result := qry.FieldByName('descricao').AsString;
     end;
   end;
+function TfrmTelaRelatorio.sBuscarPorcentagem(cds : TClientDataSet ) : Double;
+var vPorcentagem : Double ;
+var i : Integer ;
+begin
+  for i := 0 to (cds).RecordCount - 1 do
+  begin
+  if copy(cds.FieldByName('CLASSIFICACAO').AsInteger, 1,3 ) = cds.FieldByName('CLASSIFICACAO').AsInteger then
+  begin
+    //
+  end;
+  end;
+end;
 end.
