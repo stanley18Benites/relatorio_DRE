@@ -263,6 +263,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       Top = 112
       Width = 778
       Height = 15
+      Color = clWhite
+      ParentColor = False
+      Transparent = False
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 0
@@ -280,7 +283,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Text = ''
-        BeforePrint = dbContaBeforePrint
+        Transparent = False
       end
       object dbSaldoTotal: TRLDBText
         Left = 577
@@ -300,12 +303,13 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Text = ''
+        Transparent = False
       end
-      object RLLabel14: TRLLabel
+      object label_porcentagem: TRLLabel
         Left = 737
         Top = -1
         Width = 38
-        Height = 13
+        Height = 14
         AutoSize = False
         Caption = '%'
         Font.Charset = DEFAULT_CHARSET
@@ -315,6 +319,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Font.Style = [fsBold]
         Layout = tlCenter
         ParentFont = False
+        Transparent = False
       end
     end
   end

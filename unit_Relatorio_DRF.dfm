@@ -320,6 +320,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Transparent = False
+        BeforePrint = label_porcentagemBeforePrint
       end
     end
   end

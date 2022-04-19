@@ -13,9 +13,14 @@ type
     nome: string;
     valor : Currency ;
     nivel : Integer ;
+end;
+  type
+  TContaPorcentagem = record
+    conta : integer ;
+    valor : Currency;
   end;
   TContasBct = array of TContaBct;
-
+  TContasPorcentagem = array of TContaPorcentagem;
   TfrmTelaRelatorio = class(TForm)
     rpRelatorioDRF: TRLReport;
     RLBand1: TRLBand;
@@ -40,12 +45,14 @@ type
     label_porcentagem: TRLLabel;
     RLLabel8: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
+    procedure label_porcentagemBeforePrint(Sender: TObject; var AText: string;
+      var PrintIt: Boolean);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
     function sBuscarClasse(sClasse : String): String;
     function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): Integer;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
-    function sBuscarPorcentagem(cds : TClientDataSet; contas : TContasBct): Double;
+    procedure sBuscarPorcentagem(cds : TClientDataSet);
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -55,6 +62,7 @@ implementation
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
  var count : Integer ;
+ var countPorcentagem : Integer ;
 {$R *.dfm}
 
 class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem : Integer);
@@ -62,6 +70,7 @@ class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem
 var frmTelaRelatorio : TfrmTelaRelatorio;
   begin
       try
+        countPorcentagem := 0 ;
         frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
         frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
         frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
@@ -69,6 +78,28 @@ var frmTelaRelatorio : TfrmTelaRelatorio;
       finally
         frmTelaRelatorio.Free;
       end;
+end;
+
+procedure TfrmTelaRelatorio.label_porcentagemBeforePrint(Sender: TObject;
+  var AText: string; var PrintIt: Boolean);
+var vPorcentagem : Double ;
+i : Integer ;
+conta : TContasPorcentagem ;
+begin
+  conta := nil ;
+ if cds.RecordCount > 0 then
+  for i := 0 to cds.RecordCount - 1 do
+  begin
+    SetLength(conta, length(conta) + 1);
+    conta[i].conta := cds.FieldByName('NIVEL').AsFloat ;
+    conta[i].valor := cds.FieldByName('SALDO').AsFloat    ;
+  end;
+  for i := 0 to Length(conta) - 1 do
+  begin
+    //label_porcentagem.Caption := CurrToStr(conta[i].valor);
+    ShowMessage(CurrToStr(conta[i].valor));
+  end;
+  //result := conta ;
 end;
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -153,7 +184,7 @@ i : Integer ;
         end;
       end;
     finally
-    sBuscarPorcentagem(cds, contas);
+    sBuscarPorcentagem(cds);
     end;
     result := cds;
   end;
@@ -269,14 +300,23 @@ var qry : TFDQuery;
       result := qry.FieldByName('descricao').AsString;
     end;
   end;
-function TfrmTelaRelatorio.sBuscarPorcentagem(cds : TClientDataSet; contas : TContasBct) : Double;
+procedure TfrmTelaRelatorio.sBuscarPorcentagem(cds : TClientDataSet) ;
 var vPorcentagem : Double ;
-var i : Integer ;
+i : Integer ;
+conta : TContasPorcentagem ;
 begin
-  for i := 0 to length(contas)- 1 do
-  if copy(cds.FieldByName('CLASSE').AsString,1,length(contas[i].classificacao)) = contas[i].classificacao then //copy(cds.FieldByName('CLASSE').AsString, 1,3 ) = contas[i].classificacao then
+  conta := nil ;
+ if cds.RecordCount > 0 then
+  for i := 0 to cds.RecordCount - 1 do
   begin
-    label_porcentagem.Caption := '10%';
+    SetLength(conta, length(conta) + 1);
+    conta[i].conta := cds.FieldByName('CLASSE').AsInteger ;
+    conta[i].valor := cds.FieldByName('SALDO').AsFloat    ;
   end;
+  for i := 0 to Length(conta) - 1 do
+  begin
+    label_porcentagem.Caption := CurrToStr(conta[i].valor);
+  end;
+  //result := conta ;
 end;
 end.

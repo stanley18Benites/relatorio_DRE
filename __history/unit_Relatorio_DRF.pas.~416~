@@ -15,7 +15,12 @@ type
     nivel : Integer ;
   end;
   TContasBct = array of TContaBct;
-
+type
+  TContaPorcentagem = record
+    conta : integer ;
+    valor : Currency;
+  end;
+  TContaPorcentagem = array of TContaPorcentagem;
   TfrmTelaRelatorio = class(TForm)
     rpRelatorioDRF: TRLReport;
     RLBand1: TRLBand;
@@ -45,7 +50,7 @@ type
     function sBuscarClasse(sClasse : String): String;
     function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): Integer;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
-    function sBuscarPorcentagem(cds : TClientDataSet; contas : TContasBct): Double;
+    function sBuscarPorcentagem(cds : TClientDataSet): Double;
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -153,7 +158,7 @@ i : Integer ;
         end;
       end;
     finally
-    sBuscarPorcentagem(cds, contas);
+    //sBuscarPorcentagem(cds, contas);
     end;
     result := cds;
   end;
@@ -269,16 +274,17 @@ var qry : TFDQuery;
       result := qry.FieldByName('descricao').AsString;
     end;
   end;
-function TfrmTelaRelatorio.sBuscarPorcentagem(cds : TClientDataSet; contas : TContasBct) : Double;
+function TfrmTelaRelatorio.sBuscarPorcentagem(cds : TClientDataSet) : Double;
 var vPorcentagem : Double ;
-var i : Integer ;
+i : Integer ;
+conta : TContaPorcentagem ;
 begin
-  for i := 0 to (cds).RecordCount - 1 do
+  conta := nil ;
+ if cds.RecordCount > 0 then
+  for i := 0 to cds.RecordCount - 1 do
   begin
-  if copy(cds.FieldByName('CLASSE').AsString, 1,3 ) = contas[i].classificacao then
-  begin
-    //
-  end;
+    SetLength(conta, length(conta) + 1);
+    conta[i]. := cds.FieldByName('CLASSE').AsInteger ;
   end;
 end;
 end.
