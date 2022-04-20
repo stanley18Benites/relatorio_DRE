@@ -69,15 +69,15 @@ class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem
 // PROCEDURE PARA CHAMAR FUNCAO DE MONTAR DADOS E APOS, IMPRIMIR O RELATORIO PRONTO
 var frmTelaRelatorio : TfrmTelaRelatorio;
   begin
-      try
-        countPorcentagem := 0 ;
-        frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
-        frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
-        frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
-        frmTelaRelatorio.rpRelatorioDRF.Preview;  //IMPRIMINDO O RELATORIO
-      finally
-        frmTelaRelatorio.Free;
-      end;
+  try
+    countPorcentagem := 0 ;
+    frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
+    frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
+    frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
+    frmTelaRelatorio.rpRelatorioDRF.Preview;  //IMPRIMINDO O RELATORIO
+  finally
+    frmTelaRelatorio.Free;
+  end;
 end;
 
 procedure TfrmTelaRelatorio.label_porcentagemBeforePrint(Sender: TObject;
@@ -91,7 +91,7 @@ begin
   for i := 0 to cds.RecordCount - 1 do
   begin
     SetLength(conta, length(conta) + 1);
-    conta[i].conta := cds.FieldByName('NIVEL').AsFloat ;
+//    conta[i].conta := cds.FieldByName('NIVEL').AsFloat ;
     conta[i].valor := cds.FieldByName('SALDO').AsFloat    ;
   end;
   for i := 0 to Length(conta) - 1 do
