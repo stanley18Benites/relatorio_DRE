@@ -311,7 +311,6 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Width = 38
         Height = 14
         AutoSize = False
-        Caption = '%'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -12

@@ -52,7 +52,7 @@ end;
     function sBuscarClasse(sClasse : String): String;
     function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): Integer;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
-    procedure sBuscarPorcentagem(cds : TClientDataSet);
+    function sBuscarPorcentagem(classe : String) : String;
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -61,8 +61,8 @@ implementation
  uses unit_DataModule_DRF;
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
- var count : Integer ;
- var countPorcentagem : Integer ;
+ var count, countPorcentagem, a : Integer ;
+
 {$R *.dfm}
 
 class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem : Integer);
@@ -71,6 +71,7 @@ var frmTelaRelatorio : TfrmTelaRelatorio;
   begin
   try
     countPorcentagem := 0 ;
+    a := 0 ;
     frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
     frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
     frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
@@ -83,22 +84,29 @@ end;
 procedure TfrmTelaRelatorio.label_porcentagemBeforePrint(Sender: TObject;
   var AText: string; var PrintIt: Boolean);
 var vPorcentagem : Double ;
-i : Integer ;
+i, s : Integer ;
 conta : TContasPorcentagem ;
 begin
-  conta := nil ;
- if cds.RecordCount > 0 then
-  for i := 0 to cds.RecordCount - 1 do
-  begin
-    SetLength(conta, length(conta) + 1);
-//    conta[i].conta := cds.FieldByName('NIVEL').AsFloat ;
-    conta[i].valor := cds.FieldByName('SALDO').AsFloat    ;
-  end;
-  for i := 0 to Length(conta) - 1 do
-  begin
-    //label_porcentagem.Caption := CurrToStr(conta[i].valor);
-    ShowMessage(CurrToStr(conta[i].valor));
-  end;
+//  conta := nil ;
+//if cds.RecordCount > 0 then
+//  for i := 0 to cds.RecordCount - 1 do
+//  begin
+    //SetLength(conta, length(conta) + 1);
+    //conta[i].conta := i; //StrToInt(cds.FieldByName('CLASSE').AsString );
+    //conta[i].valor := cds.FieldByName('SALDO').AsFloat    ;
+    //cds.Next;
+//  end;
+  //for i := 0 to Length(conta) - 1 do
+  //begin
+    //for s := 0 to length(conta) do
+    //begin
+      AText := sBuscarPorcentagem(cds.FieldByName('classe').AsString) ;
+      cds.Next ;// FloatToStr(conta[a].valor);
+      //a := a + 1 ;
+      //a := a + 1 ;
+    //end;
+
+  //end;
   //result := conta ;
 end;
 
@@ -184,7 +192,7 @@ i : Integer ;
         end;
       end;
     finally
-    sBuscarPorcentagem(cds);
+    //sBuscarPorcentagem(cds);
     end;
     result := cds;
   end;
@@ -248,26 +256,32 @@ begin
   if dsDrf.DataSet.FieldByName('AS').AsString = 'S' then
   begin
     dbConta.Font.Style := [fsBold];
+    dbConta.Font.Size := 9 ;
     dbSaldoTotal.Font.Style := [fsBold];
+    dbSaldoTotal.Font.Size := 9 ;
+    label_porcentagem.Font.Style := [fsBold] ;
   end
   else
   begin
     dbConta.Font.Style := [];
+     dbConta.Font.Size := 8 ;
     dbSaldoTotal.Font.Style := [];
+    dbSaldoTotal.Font.Size := 8 ;
+    label_porcentagem.Font.Style := [];
   end;
   if cds.FieldByName('NIVEL').AsInteger = 3 then
   begin
     dbConta.Left := 5 ;
-    label_porcentagem.Caption := '0%';
+    //label_porcentagem.Caption := '0%';
   end
   else if cds.FieldByName('NIVEL').AsInteger = 4 then
   begin
     dbConta.Left := 10 ;
-    label_porcentagem.Caption := '0%';
+    //label_porcentagem.Caption := '0%';
   end
   else if cds.FieldByName('NIVEL').AsInteger = 1 then
   begin
-    label_porcentagem.Caption := '100%';
+    //label_porcentagem.Caption := '100%';
   end;
   if count mod 2 = 0 then
   begin
@@ -300,9 +314,10 @@ var qry : TFDQuery;
       result := qry.FieldByName('descricao').AsString;
     end;
   end;
-procedure TfrmTelaRelatorio.sBuscarPorcentagem(cds : TClientDataSet) ;
+function TfrmTelaRelatorio.sBuscarPorcentagem(classe : String) : String;
 var vPorcentagem : Double ;
-i : Integer ;
+begin
+{i : Integer ;
 conta : TContasPorcentagem ;
 begin
   conta := nil ;
@@ -312,11 +327,15 @@ begin
     SetLength(conta, length(conta) + 1);
     conta[i].conta := cds.FieldByName('CLASSE').AsInteger ;
     conta[i].valor := cds.FieldByName('SALDO').AsFloat    ;
+    cds.next;
   end;
-  for i := 0 to Length(conta) - 1 do
-  begin
-    label_porcentagem.Caption := CurrToStr(conta[i].valor);
-  end;
-  //result := conta ;
+}
+//    label_porcentagem.Caption := IntToStr(a) ;//CurrToStr(conta[a].valor);
+if copy(cds.FieldByName('classe').AsString,1,3) = classe then
+begin
+  result := a.ToString;
+end
+else
+  result := '1';
 end;
 end.
