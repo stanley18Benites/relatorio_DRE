@@ -29,7 +29,6 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     Font.Height = -13
     Font.Name = 'Arial'
     Font.Style = []
-    NextReport = frm_nextPage.rpRelatorioDRF
     PageSetup.Orientation = poLandscape
     object RLBand1: TRLBand
       Left = 8
