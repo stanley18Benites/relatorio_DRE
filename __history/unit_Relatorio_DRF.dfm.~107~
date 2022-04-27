@@ -264,12 +264,12 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       Left = 8
       Top = 112
       Width = 778
-      Height = 15
+      Height = 14
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 0
-        Top = 1
-        Width = 414
+        Top = 0
+        Width = 591
         Height = 12
         AutoSize = False
         DataField = 'DESCRICAO'
@@ -286,7 +286,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object dbSaldoTotal: TRLDBText
         Left = 597
-        Top = 1
+        Top = 0
         Width = 125
         Height = 12
         Alignment = taRightJustify
@@ -303,22 +303,24 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
         Text = ''
       end
-      object RLLabel8: TRLLabel
+      object db_porcentagem: TRLDBText
         Left = 728
-        Top = 1
+        Top = 0
         Width = 47
-        Height = 13
+        Height = 12
         Alignment = taRightJustify
         AutoSize = False
-        Caption = '%'
+        DataField = 'PERC'
+        DataSource = dsDRF
+        DisplayMask = '###0.00%'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
-        Font.Height = -12
+        Font.Height = -11
         Font.Name = 'Arial'
-        Font.Style = [fsBold]
+        Font.Style = []
         Layout = tlCenter
         ParentFont = False
-        BeforePrint = RLLabel8BeforePrint
+        Text = ''
       end
     end
   end

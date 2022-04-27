@@ -94,7 +94,8 @@ begin
     CDS.FieldDefs.Clear;
     cds.FieldDefs.Add('AS',ftString,1);
     CDS.FieldDefs.Add('NIVEL',ftInteger);
-    cds.FieldDefs.Add('CLASSE',ftString,5);
+    CDS.FieldDefs.Add('CONTA',ftInteger);
+    cds.FieldDefs.Add('CLASSE',ftString,50);
     cds.FieldDefs.Add('DESCRICAO',ftString,100);
     cds.FieldDefs.Add('SALDO',ftFloat);
     cds.FieldDefs.Add('PERC',ftFloat);
@@ -113,7 +114,7 @@ begin
 
     qry.Close;
     qry.SQL.Clear;
-    qry.SQL.Add('select cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
+    qry.SQL.Add('select caixa.CONTA_ID,cadplanoconta.NOMECONTA as DESCRICAO ,sum(CASE WHEN caixa.TIPO="E" THEN coalesce(caixa.VALORPAGO,0) ELSE ');
     qry.SQL.Add('coalesce(caixa.VALORPAGO,0) END) as SALDO, cadplanoconta.CLASS  AS classe');
     qry.SQL.Add('from caixa ');
     qry.SQL.Add('left join CADPLANOCONTA on caixa.CONTA_ID=cadplanoconta.ID ');
@@ -133,6 +134,7 @@ begin
       pegarContas(qry.FieldByName('classe').AsString,contas, qry.FieldByName('SALDO').AsFloat);
       cds.Append;
       cds.FieldByName('AS').AsString        := 'A';
+      cds.FieldByName('CONTA').AsInteger    := qry.FieldByName('conta_id').AsInteger;
       cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;
       cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
       cds.FieldByName('SALDO').AsFloat      := qry.FieldByName('SALDO').AsFloat;
@@ -147,11 +149,11 @@ begin
     begin
       cds.Append;
       cds.FieldByName('AS').AsString          := 'S';
+      cds.FieldByName('CONTA').asInteger      := contas[i].conta;
       cds.FieldByName('CLASSE').AsString      := contas[i].classificacao;
       cds.FieldByName('DESCRICAO').AsString   := contas[i].nome;
       cds.FieldByName('SALDO').AsFloat        := contas[i].valor;
       cds.FieldByName('NIVEL').AsInteger      := contas[i].nivel ;
-
       cds.Post;
     end;
     end;
@@ -238,38 +240,47 @@ end;
 procedure TfrmTelaRelatorio.buscarPercentual();
 var bmValor1, bmValor2: TBookmark;
     sClass: string;
-    dValor,dPerc: double;
+    dValor,dPerc, dPercSintetica: double;
+    iConta : Integer;
 begin
   cds.First;
   while not cds.Eof do
   begin
     sClass := cds.FieldByName('CLASSE').AsString;
+    iConta  := cds.FieldByName('CONTA').asInteger;
     dValor := cds.FieldByName('SALDO').AsFloat;
-    if cds.FieldByName('AS').AsString='S' then
-    begin
+    //if cds.FieldByName('AS').AsString='S' then
+    //begin
       bmValor1 := cds.GetBookmark;
       bmValor2 := cds.GetBookmark;
       cds.First;
       while not cds.Eof do
       begin
-        if copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass then
-        //if (cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass  then
+        if iConta <> cds.FieldByName('CONTA').AsInteger then
         begin
-          dPerc := 0.00;
-          if dValor<>0 then
+          if copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass then
           begin
-          if cds.FieldByName('NIVEL').AsInteger  <= 2 then
-          begin
-            dPerc :=  (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+            dPerc := 0.00;
+            if dValor<>0 then
+            begin
+    //            if cds.FieldByName('NIVEL').AsInteger  <= 2 then
+    //            begin
+                dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+    //           end
+    {            else then
+              begin
+    //              dPerc := ;
+              end;}
+              cds.edit;
+              cds.FieldByName('PERC').AsFloat := dPerc;
+              cds.Post;
+            end;
           end;
-          cds.edit;
-          cds.FieldByName('PERC').AsFloat := dPerc;
-          cds.Post;
-        end;
         cds.Next;
+        end;
       end;
       cds.GoToBookmark(bmValor1);
-    end;
+    //end;
     cds.Next;
   end;
 end;

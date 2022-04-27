@@ -269,7 +269,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       object dbConta: TRLDBText
         Left = 0
         Top = 0
-        Width = 591
+        Width = 554
         Height = 12
         AutoSize = False
         DataField = 'DESCRICAO'
@@ -285,9 +285,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         BeforePrint = dbContaBeforePrint
       end
       object dbSaldoTotal: TRLDBText
-        Left = 597
+        Left = 560
         Top = 0
-        Width = 125
+        Width = 86
         Height = 12
         Alignment = taRightJustify
         AutoSize = False
@@ -304,9 +304,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Text = ''
       end
       object db_porcentagem: TRLDBText
-        Left = 728
+        Left = 652
         Top = 0
-        Width = 47
+        Width = 123
         Height = 12
         Alignment = taRightJustify
         AutoSize = False
