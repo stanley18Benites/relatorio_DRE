@@ -17,8 +17,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
   object rpRelatorioDRF: TRLReport
     Left = 0
     Top = 0
-    Width = 1123
-    Height = 794
+    Width = 794
+    Height = 1123
     Margins.LeftMargin = 2.000000000000000000
     Margins.TopMargin = 5.000000000000000000
     Margins.RightMargin = 2.000000000000000000
@@ -29,17 +29,16 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     Font.Height = -13
     Font.Name = 'Arial'
     Font.Style = []
-    PageSetup.Orientation = poLandscape
     object RLBand1: TRLBand
       Left = 8
       Top = 19
-      Width = 1107
+      Width = 778
       Height = 93
       BandType = btHeader
       object RLPanel1: TRLPanel
         Left = 0
         Top = 0
-        Width = 1107
+        Width = 778
         Height = 32
         Borders.Sides = sdCustom
         Borders.DrawLeft = False
@@ -50,7 +49,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         object RLLabel1: TRLLabel
           Left = 0
           Top = 0
-          Width = 1107
+          Width = 778
           Height = 22
           Alignment = taCenter
           AutoSize = False
@@ -72,7 +71,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       object RLPanel2: TRLPanel
         Left = 0
         Top = 38
-        Width = 1107
+        Width = 778
         Height = 34
         Borders.Sides = sdCustom
         Borders.DrawLeft = True
@@ -123,7 +122,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           ParentFont = False
         end
         object RLSystemInfo2: TRLSystemInfo
-          Left = 1022
+          Left = 753
           Top = 3
           Width = 25
           Height = 14
@@ -139,7 +138,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           Text = ''
         end
         object RLLabel4: TRLLabel
-          Left = 1007
+          Left = 738
           Top = 3
           Width = 15
           Height = 14
@@ -155,7 +154,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           ParentFont = False
         end
         object RLSystemInfo1: TRLSystemInfo
-          Left = 972
+          Left = 704
           Top = 3
           Width = 34
           Height = 14
@@ -171,7 +170,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           Text = ''
         end
         object RLLabel9: TRLLabel
-          Left = 934
+          Left = 667
           Top = 3
           Width = 37
           Height = 14
@@ -229,10 +228,11 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
       end
       object RLLabel7: TRLLabel
-        Left = 240
+        Left = 652
         Top = 72
-        Width = 50
+        Width = 70
         Height = 16
+        Alignment = taRightJustify
         AutoSize = False
         Caption = 'Saldo'
         Font.Charset = DEFAULT_CHARSET
@@ -243,71 +243,12 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
       end
-      object RLLabel8: TRLLabel
-        Left = 374
-        Top = 72
-        Width = 47
-        Height = 16
-        AutoSize = False
-        Caption = '%'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -12
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        Layout = tlCenter
-        ParentFont = False
-      end
-      object RLLabel10: TRLLabel
-        Left = 536
-        Top = 72
-        Width = 47
-        Height = 16
-        AutoSize = False
-        Caption = '%'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -12
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        Layout = tlCenter
-        ParentFont = False
-      end
-      object RLLabel11: TRLLabel
-        Left = 731
-        Top = 72
-        Width = 47
-        Height = 16
-        AutoSize = False
-        Caption = '%'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -12
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        Layout = tlCenter
-        ParentFont = False
-      end
       object RLLabel12: TRLLabel
-        Left = 867
+        Left = 728
         Top = 72
         Width = 47
         Height = 16
-        AutoSize = False
-        Caption = '%'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -12
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        Layout = tlCenter
-        ParentFont = False
-      end
-      object RLLabel13: TRLLabel
-        Left = 1010
-        Top = 72
-        Width = 47
-        Height = 16
+        Alignment = taRightJustify
         AutoSize = False
         Caption = '%'
         Font.Charset = DEFAULT_CHARSET
@@ -322,14 +263,14 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     object RLBand2: TRLBand
       Left = 8
       Top = 112
-      Width = 1107
-      Height = 15
+      Width = 778
+      Height = 14
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 0
-        Top = 1
-        Width = 239
-        Height = 13
+        Top = 0
+        Width = 591
+        Height = 12
         AutoSize = False
         DataField = 'DESCRICAO'
         DataSource = dsDRF
@@ -341,30 +282,14 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Text = ''
+        BeforePrint = dbContaBeforePrint
       end
       object dbSaldoTotal: TRLDBText
-        Left = 240
-        Top = 1
-        Width = 71
-        Height = 13
-        AutoSize = False
-        DataField = 'SALDO'
-        DataSource = dsDRF
-        DisplayMask = 'R$ #,##0.00'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Arial'
-        Font.Style = []
-        Layout = tlCenter
-        ParentFont = False
-        Text = ''
-      end
-      object RLDBText5: TRLDBText
-        Left = 1010
+        Left = 597
         Top = 0
-        Width = 97
-        Height = 14
+        Width = 125
+        Height = 12
+        Alignment = taRightJustify
         AutoSize = False
         DataField = 'SALDO'
         DataSource = dsDRF
@@ -378,69 +303,16 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         ParentFont = False
         Text = ''
       end
-      object RLDBText6: TRLDBText
-        Left = 867
+      object db_porcentagem: TRLDBText
+        Left = 728
         Top = 0
-        Width = 97
-        Height = 14
+        Width = 47
+        Height = 12
+        Alignment = taRightJustify
         AutoSize = False
-        DataField = 'SALDO'
+        DataField = 'PERC'
         DataSource = dsDRF
-        DisplayMask = 'R$ #,##0.00'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Arial'
-        Font.Style = []
-        Layout = tlCenter
-        ParentFont = False
-        Text = ''
-      end
-      object RLDBText3: TRLDBText
-        Left = 731
-        Top = 0
-        Width = 97
-        Height = 14
-        AutoSize = False
-        DataField = 'SALDO'
-        DataSource = dsDRF
-        DisplayMask = 'R$ #,##0.00'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Arial'
-        Font.Style = []
-        Layout = tlCenter
-        ParentFont = False
-        Text = ''
-      end
-      object RLDBText4: TRLDBText
-        Left = 536
-        Top = 1
-        Width = 97
-        Height = 13
-        AutoSize = False
-        DataField = 'SALDO'
-        DataSource = dsDRF
-        DisplayMask = 'R$ #,##0.00'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Arial'
-        Font.Style = []
-        Layout = tlCenter
-        ParentFont = False
-        Text = ''
-      end
-      object RLDBText1: TRLDBText
-        Left = 374
-        Top = 1
-        Width = 97
-        Height = 13
-        AutoSize = False
-        DataField = 'SALDO'
-        DataSource = dsDRF
-        DisplayMask = 'R$ #,##0.00'
+        DisplayMask = '###0.00%'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
