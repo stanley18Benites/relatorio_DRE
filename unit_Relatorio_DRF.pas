@@ -136,8 +136,8 @@ begin
       cds.FieldByName('CLASSE').AsString    := qry.FieldByName('classe').AsString;
       cds.FieldByName('DESCRICAO').AsString := qry.FieldByName('descricao').AsString;
       cds.FieldByName('SALDO').AsFloat      := qry.FieldByName('SALDO').AsFloat;
-      cds.FieldByName('NIVEL').AsInteger    := 0 ;
-      cds.FieldByName('PERC').AsFloat       := 0;
+      cds.FieldByName('NIVEL').AsInteger    := 2 ;
+      //cds.FieldByName('PERC').AsFloat       := 0;
       cds.Post;
       qry.Next;
     end;
@@ -151,7 +151,7 @@ begin
       cds.FieldByName('DESCRICAO').AsString   := contas[i].nome;
       cds.FieldByName('SALDO').AsFloat        := contas[i].valor;
       cds.FieldByName('NIVEL').AsInteger      := contas[i].nivel ;
-      cds.FieldByName('PERC').AsFloat         := 0.0 ;
+
       cds.Post;
     end;
     end;
@@ -195,7 +195,7 @@ begin
   while NOT qry.Eof do
   begin
     SetLength( contas, length(contas) + 1 );
-    idx                       := length(contas) ;
+    idx                       := length(contas)-1 ;
     contas[idx].conta         := qry.FieldByName('conta').AsInteger;
     contas[idx].classificacao := qry.FieldByName('class').AsString;
     contas[idx].nome          := qry.FieldByName('nomeconta').AsString;
@@ -236,7 +236,7 @@ begin
 end;
 
 procedure TfrmTelaRelatorio.buscarPercentual();
-var bm: TBookmark;
+var bmValor1, bmValor2: TBookmark;
     sClass: string;
     dValor,dPerc: double;
 begin
@@ -247,22 +247,29 @@ begin
     dValor := cds.FieldByName('SALDO').AsFloat;
     if cds.FieldByName('AS').AsString='S' then
     begin
-      bm := cds.GetBookmark;
+      bmValor1 := cds.GetBookmark;
+      bmValor2 := cds.GetBookmark;
       cds.First;
       while not cds.Eof do
       begin
-        if copy(cds.FieldByName('CLASSE').AsString,1,length(sClass) -1 )=sClass then
+        if copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass then
+        //if (cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass  then
         begin
           dPerc := 0.00;
           if dValor<>0 then
-            dPerc :=  (cds.FieldByName('SALDO').AsFloat/dValor)*100;
-          cds.edit;
-          cds.FieldByName('PERC').AsFloat := dPerc;
-          cds.Post;
-        end;
+          begin
+            if cds.FieldByName('NIVEL').AsInteger  <= 2 then
+            begin
+              dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+            end;
+            cds.edit;
+            cds.FieldByName('PERC').AsFloat := dPerc;
+            cds.Post;
+          end;
+          end;
         cds.Next;
-      end;
-      cds.GoToBookmark(bm);
+        end;
+      cds.GoToBookmark(bmValor1);
     end;
     cds.Next;
   end;
@@ -272,7 +279,7 @@ end;
 procedure TfrmTelaRelatorio.dbContaBeforePrint(Sender: TObject;
   var AText: string; var PrintIt: Boolean);
 begin
-  if cds.FieldByName('NIVEL').AsInteger = 0 then
+  if cds.FieldByName('NIVEL').AsInteger = 2 then
   begin
     dbConta.Left := 9 ;
   end

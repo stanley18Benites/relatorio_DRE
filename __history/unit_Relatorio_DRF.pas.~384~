@@ -155,7 +155,7 @@ begin
       cds.Post;
     end;
     end;
-    buscarContas();
+    buscarPercentual();
   finally
   end;
 result := cds;
@@ -195,7 +195,7 @@ begin
   while NOT qry.Eof do
   begin
     SetLength( contas, length(contas) + 1 );
-    idx                       := length(contas)-1 ;
+    idx                       := length(contas) ;
     contas[idx].conta         := qry.FieldByName('conta').AsInteger;
     contas[idx].classificacao := qry.FieldByName('class').AsString;
     contas[idx].nome          := qry.FieldByName('nomeconta').AsString;
