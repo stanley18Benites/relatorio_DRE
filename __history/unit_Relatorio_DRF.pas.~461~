@@ -55,7 +55,6 @@ end;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
 //    procedure sPercentual(nConta : String; vAnalitica : Double);
     procedure buscarPercentual;
-    procedure buscarPercentualAnalitica(sClasse: String);
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -313,11 +312,6 @@ begin
   else
     cds.next;
   cds.GoToBookmark(bm);
-end;
-
-procedure TfrmTelaRelatorio.buscarPercentualAnalitica(sClasse : String);
-begin
-
 end;
 
 procedure TfrmTelaRelatorio.dbContaBeforePrint(Sender: TObject;

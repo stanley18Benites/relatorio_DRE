@@ -241,61 +241,109 @@ var bm: TBookmark;
     sClass: string;
     dValor,dPerc, dPercSintetica: double;
     iConta : Integer;
+    bCondicao : boolean ;
 begin
+  bCondicao := true ;
   cds.First;
   while not cds.Eof do
+  if (sClass = '')and bCondicao then
+  begin
+    //dPerc := 0.00;
+    //dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+    cds.edit;
+    cds.FieldByName('PERC').AsFloat := 100;//dPerc;
+    cds.Post;
+    bCondicao := false;
+  end
+  else if cds.FieldByName('AS').AsString = 'S' then
   begin
     sClass := cds.FieldByName('CLASSE').AsString;
-    iConta  := cds.FieldByName('CONTA').asInteger;
+    iConta := cds.FieldByName('CONTA').asInteger;
     dValor := cds.FieldByName('SALDO').AsFloat;
-    //if cds.FieldByName('AS').AsString='S' then
-    //begin
-      bm := cds.GetBookmark;
-      cds.First;
-      while not cds.Eof do
+    bm := cds.GetBookmark;
+    while not cds.Eof do
+    begin
+      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0) then
       begin
-        //if iConta <> cds.FieldByName('CONTA').AsInteger then
-        //begin
-          if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass) and
-            (cds.FieldByName('PERC').AsFloat = 0) then
-          begin
-          //if cds.FieldByName('PERC').AsFloat = 0 then
-          //begin
-            dPerc := 0.00;
-            if dValor <>0 then
-            begin
-            //    if cds.FieldByName('NIVEL').AsInteger  > 2 then
-            //    begin
-                dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
-    //           end
-    {            else then
-              begin
-    //              dPerc := ;
-              end;}
-              cds.edit;
-              cds.FieldByName('PERC').AsFloat := dPerc;
-              cds.Post;
-              cds.Next;
-            //     end;
-            end;
-
-          end;
-        //end
-        //else
-        //begin
-          //cds.edit;
-          //cds.FieldByName('PERC').AsFloat := 100;
-          //cds.Post;
-        //end;
+        dPerc := 0.00;
+        if dValor <> 0 then
+        begin
+          dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+          cds.edit;
+          cds.FieldByName('PERC').AsFloat := dPerc;
+          cds.Post;
+          cds.Next;
+        end;
+      end
+      else
         cds.Next;
-      end;
-      cds.Next;
-      cds.GoToBookmark(bm);
-    //end;
-
-  end;
+    end;
+    cds.GoToBookmark(bm);
+    cds.Next;
+  end
+  else
+    cds.next;
+  cds.GoToBookmark(bm);
+  else if cds.FieldByName('AS').AsString = 'S' then
+  begin
+    sClass := cds.FieldByName('CLASSE').AsString;
+    iConta := cds.FieldByName('CONTA').asInteger;
+    dValor := cds.FieldByName('SALDO').AsFloat;
+    bm := cds.GetBookmark;
+    while not cds.Eof do
+    begin
+      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0) then
+      begin
+        dPerc := 0.00;
+        if dValor <> 0 then
+        begin
+          dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+          cds.edit;
+          cds.FieldByName('PERC').AsFloat := dPerc;
+          cds.Post;
+          cds.Next;
+        end;
+      end
+      else
+        cds.Next;
+    end;
+    cds.GoToBookmark(bm);
+    cds.Next;
+  end
+  else
+    cds.next;
+  cds.GoToBookmark(bm);
+  //-----------------------------------
+   if cds.FieldByName('AS').AsString = 'A' then
+  begin
+    sClass := cds.FieldByName('CLASSE').AsString;
+    iConta := cds.FieldByName('CONTA').asInteger;
+    dValor := cds.FieldByName('SALDO').AsFloat;
+    bm := cds.GetBookmark;
+    while not cds.Eof do
+    begin
+      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'A')and(cds.FieldByName('PERC').AsFloat=0) then
+      begin
+        dPerc := 0.00;
+        if dValor <> 0 then
+        begin
+          dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+          cds.edit;
+          cds.FieldByName('PERC').AsFloat := dPerc;
+          cds.Post;
+          cds.Next;
+        end;
+      end
+      else
+        cds.Next;
+    end;
+    cds.GoToBookmark(bm);
+    cds.Next;
+  end
+  else
+    cds.next;
+  cds.GoToBookmark(bm);
 end;
-
 
 procedure TfrmTelaRelatorio.dbContaBeforePrint(Sender: TObject;
   var AText: string; var PrintIt: Boolean);
@@ -328,5 +376,37 @@ begin
     db_porcentagem.Font.Style:= [];
   end;
 end;
+{
+    sClass := cds.FieldByName('CLASSE').AsString;
+    iConta := cds.FieldByName('CONTA').asInteger;
+    dValor := cds.FieldByName('SALDO').AsFloat;
+    if cds.FieldByName('AS').AsString='S' then
+    begin
+      bm := cds.GetBookmark;
+      cds.First;
+      while not cds.Eof do
+      begin
+        if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass)and(cds.FieldByName('PERC').AsFloat = 0 )AND(cds.FieldByName('AS').AsString = 'S') then
+        begin
+      //    if (sClass = '' )and (cds.FieldByName('CLASSE').AsString = '') then
+         // begin
+         //   cds.FieldByName('PERC').AsFloat := 100;
+         // //end
 
+          dPerc := 0.00;
+          //else if (dValor <>0) then
+       // begin
+          dPerc := 0.00;
+          dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+          cds.edit;
+          cds.FieldByName('PERC').AsFloat := dPerc;
+          cds.Post;
+          cds.Next;
+        end;
+      cds.Next;
+      end;
+    cds.Next;
+    end;}
+   // cds.GoToBookmark(bm);
+   // cds.Next;
 end.
