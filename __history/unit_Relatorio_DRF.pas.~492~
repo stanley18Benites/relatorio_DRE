@@ -303,7 +303,8 @@ begin
     if cds.FieldByName('AS').AsString='S' then
     begin
       cds.First;
-
+      case True of
+       : begin
       while not cds.Eof do   //LOOP PARA BUSCAR PERCENTUAL CONTA ANALITICA SOBRE SINTETICA
       begin
         if length(sClass)=1then
@@ -325,7 +326,8 @@ begin
           end;
           end;
         cds.Next;
-      end;
+        end;
+        end;
       cds.GoToBookmark(bm);
     end;
     cds.Next;
