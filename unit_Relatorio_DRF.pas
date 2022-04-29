@@ -54,8 +54,8 @@ end;
     function pegarContas( sClass: string; var contas : TContasBct; valor : Currency ): Integer;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
 //    procedure sPercentual(nConta : String; vAnalitica : Double);
-    procedure buscarPercentual;
-    procedure buscarPercentualAnalitica(sClasse: String);
+    procedure buscarPercentualSintetica;
+    procedure buscarPercentualAnalitica;
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -157,7 +157,8 @@ begin
       cds.Post;
     end;
     end;
-    buscarPercentual();
+    buscarPercentualSintetica();
+    buscarPercentualAnalitica();
   finally
   end;
 result := cds;
@@ -237,7 +238,7 @@ begin
     end;
 end;
 
-procedure TfrmTelaRelatorio.buscarPercentual();
+procedure TfrmTelaRelatorio.buscarPercentualSintetica();
 var bm: TBookmark;
     sClass: string;
     dValor,dPerc, dPercSintetica: double;
@@ -283,8 +284,18 @@ begin
   else
     cds.next;
   cds.GoToBookmark(bm);
-  //____________________________________________________________________________
- if cds.FieldByName('AS').AsString = 'S' then
+end;
+
+procedure TfrmTelaRelatorio.buscarPercentualAnalitica();
+var bm: TBookmark;
+    sClass: string;
+    dValor,dPerc, dPercSintetica: double;
+    iConta : Integer;
+    bCondicao : boolean ;
+begin
+  cds.First;
+  while not cds.Eof do
+  if cds.FieldByName('AS').AsString = 'A' then
   begin
     sClass := cds.FieldByName('CLASSE').AsString;
     iConta := cds.FieldByName('CONTA').asInteger;
@@ -292,7 +303,7 @@ begin
     bm := cds.GetBookmark;
     while not cds.Eof do
     begin
-      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0) then
+      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'A')and(cds.FieldByName('PERC').AsFloat=0) and (sClass <> '')then
       begin
         dPerc := 0.00;
         if dValor <> 0 then
@@ -313,11 +324,6 @@ begin
   else
     cds.next;
   cds.GoToBookmark(bm);
-end;
-
-procedure TfrmTelaRelatorio.buscarPercentualAnalitica(sClasse : String);
-begin
-
 end;
 
 procedure TfrmTelaRelatorio.dbContaBeforePrint(Sender: TObject;

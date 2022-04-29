@@ -55,6 +55,7 @@ end;
     function atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean ;
 //    procedure sPercentual(nConta : String; vAnalitica : Double);
     procedure buscarPercentual;
+    procedure buscarPercentualAnalitica(sClasse: String);
   public
     class procedure criarRelatorio(dataini, datafin: TDate; nItem : Integer);
   end;
@@ -248,8 +249,6 @@ begin
   while not cds.Eof do
   if (sClass = '')and bCondicao then
   begin
-    //dPerc := 0.00;
-    //dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
     cds.edit;
     cds.FieldByName('PERC').AsFloat := 100;//dPerc;
     cds.Post;
@@ -261,19 +260,8 @@ begin
     iConta := cds.FieldByName('CONTA').asInteger;
     dValor := cds.FieldByName('SALDO').AsFloat;
     bm := cds.GetBookmark;
-    cds.First;
     while not cds.Eof do
     begin
-      {if (sClass = '')and bCondicao then
-      begin
-        //dPerc := 0.00;
-        //dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
-        cds.edit;
-        cds.FieldByName('PERC').AsFloat := 100;//dPerc;
-        cds.Post;
-        bCondicao := false;
-        break;
-      end }
       if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0) then
       begin
         dPerc := 0.00;
@@ -289,43 +277,46 @@ begin
       else
         cds.Next;
     end;
+    cds.GoToBookmark(bm);
+    cds.Next;
+  end
+  else
     cds.next;
-  {
+  cds.GoToBookmark(bm);
+  //____________________________________________________________________________
+ if cds.FieldByName('AS').AsString = 'S' then
+  begin
     sClass := cds.FieldByName('CLASSE').AsString;
     iConta := cds.FieldByName('CONTA').asInteger;
     dValor := cds.FieldByName('SALDO').AsFloat;
-    if cds.FieldByName('AS').AsString='S' then
+    bm := cds.GetBookmark;
+    while not cds.Eof do
     begin
-      bm := cds.GetBookmark;
-      cds.First;
-      while not cds.Eof do
+      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0) then
       begin
-        if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass)and(cds.FieldByName('PERC').AsFloat = 0 )AND(cds.FieldByName('AS').AsString = 'S') then
+        dPerc := 0.00;
+        if dValor <> 0 then
         begin
-      //    if (sClass = '' )and (cds.FieldByName('CLASSE').AsString = '') then
-         // begin
-         //   cds.FieldByName('PERC').AsFloat := 100;
-         // //end
-
-          dPerc := 0.00;
-          //else if (dValor <>0) then
-       // begin
-          dPerc := 0.00;
           dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
           cds.edit;
           cds.FieldByName('PERC').AsFloat := dPerc;
           cds.Post;
           cds.Next;
         end;
-      cds.Next;
-      end;
+      end
+      else
+        cds.Next;
+    end;
+    cds.GoToBookmark(bm);
     cds.Next;
-    end;}
-   // cds.GoToBookmark(bm);
-   // cds.Next;
-   cds.GoToBookmark(bm);
-  end  ;
+  end
+  else
     cds.next;
+  cds.GoToBookmark(bm);
+end;
+
+procedure TfrmTelaRelatorio.buscarPercentualAnalitica(sClasse : String);
+begin
 
 end;
 
@@ -360,5 +351,37 @@ begin
     db_porcentagem.Font.Style:= [];
   end;
 end;
+{
+    sClass := cds.FieldByName('CLASSE').AsString;
+    iConta := cds.FieldByName('CONTA').asInteger;
+    dValor := cds.FieldByName('SALDO').AsFloat;
+    if cds.FieldByName('AS').AsString='S' then
+    begin
+      bm := cds.GetBookmark;
+      cds.First;
+      while not cds.Eof do
+      begin
+        if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass)and(cds.FieldByName('PERC').AsFloat = 0 )AND(cds.FieldByName('AS').AsString = 'S') then
+        begin
+      //    if (sClass = '' )and (cds.FieldByName('CLASSE').AsString = '') then
+         // begin
+         //   cds.FieldByName('PERC').AsFloat := 100;
+         // //end
 
+          dPerc := 0.00;
+          //else if (dValor <>0) then
+       // begin
+          dPerc := 0.00;
+          dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+          cds.edit;
+          cds.FieldByName('PERC').AsFloat := dPerc;
+          cds.Post;
+          cds.Next;
+        end;
+      cds.Next;
+      end;
+    cds.Next;
+    end;}
+   // cds.GoToBookmark(bm);
+   // cds.Next;
 end.
