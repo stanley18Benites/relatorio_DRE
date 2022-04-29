@@ -9,11 +9,16 @@ uses
 type
   TfrmTelaInicial_DRF = class(TForm)
     btImprimir: TButton;
+    GroupBox1: TGroupBox;
+    comboBoxPeriodo: TComboBox;
+    GroupBox2: TGroupBox;
     dataini: TMaskEdit;
     datafin: TMaskEdit;
     Label1: TLabel;
-    comboBoxPeriodo: TComboBox;
-    Label2: TLabel;
+    GroupBox3: TGroupBox;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
     procedure btImprimirClick(Sender: TObject);
   private
     { Private declarations }
