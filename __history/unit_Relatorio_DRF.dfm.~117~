@@ -52,7 +52,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         object RLLabel1: TRLLabel
           Left = 0
-          Top = 5
+          Top = 0
           Width = 778
           Height = 22
           Alignment = taCenter
@@ -87,13 +87,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           Top = 1
           Width = 732
           Height = 32
-          Borders.Sides = sdCustom
-          Borders.DrawLeft = True
-          Borders.DrawTop = True
-          Borders.DrawRight = True
-          Borders.DrawBottom = True
           object RLLabel9: TRLLabel
-            Left = 643
+            Left = 603
             Top = 3
             Width = 37
             Height = 14
@@ -107,9 +102,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             ParentFont = False
           end
           object RLSystemInfo1: TRLSystemInfo
-            Left = 680
+            Left = 637
             Top = 3
-            Width = 20
+            Width = 34
             Height = 14
             Alignment = taCenter
             Font.Charset = DEFAULT_CHARSET
@@ -123,7 +118,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             Text = ''
           end
           object RLLabel4: TRLLabel
-            Left = 699
+            Left = 674
             Top = 3
             Width = 15
             Height = 14
@@ -139,9 +134,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             ParentFont = False
           end
           object RLSystemInfo2: TRLSystemInfo
-            Left = 713
+            Left = 704
             Top = 3
-            Width = 15
+            Width = 20
             Height = 14
             Alignment = taCenter
             Font.Charset = DEFAULT_CHARSET
@@ -156,8 +151,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             AfterPrint = RLSystemInfo2AfterPrint
           end
           object labelNomeEmpresa: TRLLabel
-            Left = 55
-            Top = 1
+            Left = 112
+            Top = 0
             Width = 358
             Height = 16
             AutoSize = False
@@ -170,8 +165,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             ParentFont = False
           end
           object labelPeriodo: TRLLabel
-            Left = 55
-            Top = 15
+            Left = 112
+            Top = 14
             Width = 358
             Height = 14
             AutoSize = False
@@ -185,7 +180,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           end
           object RLLabel2: TRLLabel
             Left = 0
-            Top = 1
+            Top = 3
             Width = 56
             Height = 16
             AutoSize = False
@@ -200,7 +195,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           end
           object RLLabel3: TRLLabel
             Left = 0
-            Top = 15
+            Top = 17
             Width = 51
             Height = 14
             AutoSize = False

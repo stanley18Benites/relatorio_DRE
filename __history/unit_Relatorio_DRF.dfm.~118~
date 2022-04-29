@@ -52,7 +52,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         object RLLabel1: TRLLabel
           Left = 0
-          Top = 5
+          Top = 0
           Width = 778
           Height = 22
           Alignment = taCenter
