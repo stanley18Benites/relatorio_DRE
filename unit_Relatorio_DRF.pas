@@ -250,14 +250,15 @@ begin
   bCondicao := true ;
   cds.First;
   while not cds.Eof do
-  if (sClass = '')and bCondicao then
   begin
-    cds.edit;
-    cds.FieldByName('PERC').AsFloat := 100;//dPerc;
-    cds.Post;
-    bCondicao := false;
-  end
-  else if cds.FieldByName('AS').AsString = 'S' then
+    if (sClass = '')and bCondicao then
+    begin
+      cds.edit;
+      cds.FieldByName('PERC').AsFloat := 100;//dPerc;
+      cds.Post;
+      bCondicao := false;
+    end
+  else  //cds.FieldByName('AS').AsString = 'S'
   begin
     sClass := cds.FieldByName('CLASSE').AsString;
     iConta := cds.FieldByName('CONTA').asInteger;
@@ -265,6 +266,12 @@ begin
     bm := cds.GetBookmark;
     while not cds.Eof do
     begin
+
+    end;
+
+  end;
+
+    {begin
       if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0)then
       begin
         dPerc := 0.00;
@@ -287,13 +294,13 @@ begin
         cds.Post;
         cds.Next;
       end;
-    end;
+    end; }
     cds.GoToBookmark(bm);
     cds.Next;
   end
-  else
-    cds.next;
-  cds.GoToBookmark(bm);
+  //else
+  //  cds.next;
+  //cds.GoToBookmark(bm);
 end;
 
 procedure TfrmTelaRelatorio.buscarPercentualAnalitica();
