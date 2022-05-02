@@ -16,9 +16,12 @@ type
     datafin: TMaskEdit;
     Label1: TLabel;
     GroupBox3: TGroupBox;
-    RadioButton1: TRadioButton;
-    RadioButton2: TRadioButton;
-    RadioButton3: TRadioButton;
+    rb_analitica_sReceitas: TRadioButton;
+    rb_analitica_sDespesas: TRadioButton;
+    rb_analitica_sSintetica: TRadioButton;
+    GroupBox4: TGroupBox;
+    rb_Sintetica_Receitas: TRadioButton;
+    rb_Sinteticas_Despesas: TRadioButton;
     procedure btImprimirClick(Sender: TObject);
   private
     { Private declarations }

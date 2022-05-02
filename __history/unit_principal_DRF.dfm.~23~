@@ -184,9 +184,9 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 2
-    object rb_Sintetica_Receitas: TRadioButton
+    object rb_sintetica_sReceitas: TRadioButton
       Left = 14
-      Top = 11
+      Top = 16
       Width = 113
       Height = 17
       Caption = 'Receitas'
@@ -198,7 +198,7 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
       ParentFont = False
       TabOrder = 0
     end
-    object rb_Sinteticas_Despesas: TRadioButton
+    object rb_percentual_sDespesas: TRadioButton
       Left = 14
       Top = 34
       Width = 113

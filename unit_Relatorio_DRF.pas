@@ -268,14 +268,16 @@ begin
       if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0)then
       begin
         dPerc := 0.00;
-        if dValor <> 0 then
+        if (dValor <> 0) and (frmTelaInicial_DRF.rb_sinteticas_Despesas.Checked) then
         begin
           dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
           cds.edit;
           cds.FieldByName('PERC').AsFloat := dPerc;
           cds.Post;
           cds.Next;
-        end;
+        end
+        else
+          cds.Next;
       end
       else
         cds.Next;
@@ -292,22 +294,19 @@ procedure TfrmTelaRelatorio.buscarPercentualAnalitica();
 var bm: TBookmark;
     sClass: string;
     dValor,dPerc, dPercSintetica: double;
-    iConta , iChecked: Integer;
-    bCondicao : boolean ;
+    iConta : Integer;
+    bCondicao, iChecked : boolean ;
 
 begin
   cds.First;
-  iChecked := fr
   while not cds.Eof do
   begin
     sClass := cds.FieldByName('CLASSE').AsString;
-   // iConta := cds.FieldByName('CONTA').asInteger;
     dValor := cds.FieldByName('SALDO').AsFloat;
     bm := cds.GetBookmark;
     if cds.FieldByName('AS').AsString='S' then
     begin
       cds.First;
-
       while not cds.Eof do   //LOOP PARA BUSCAR PERCENTUAL CONTA ANALITICA SOBRE SINTETICA
       begin
         if length(sClass)=1then

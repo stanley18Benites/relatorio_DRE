@@ -9,10 +9,19 @@ uses
 type
   TfrmTelaInicial_DRF = class(TForm)
     btImprimir: TButton;
+    GroupBox1: TGroupBox;
+    comboBoxPeriodo: TComboBox;
+    GroupBox2: TGroupBox;
     dataini: TMaskEdit;
     datafin: TMaskEdit;
     Label1: TLabel;
-    ListBox1: TListBox;
+    GroupBox3: TGroupBox;
+    rb_analitica_sReceitas: TRadioButton;
+    rb_analitica_sDespesas: TRadioButton;
+    rb_analitica_sSintetica: TRadioButton;
+    GroupBox4: TGroupBox;
+    rb_sintetica_sReceitas: TRadioButton;
+    rb_percentual_sDespesas: TRadioButton;
     procedure btImprimirClick(Sender: TObject);
   private
     { Private declarations }
@@ -29,7 +38,7 @@ uses unit_Relatorio_DRF;
 
 procedure TfrmTelaInicial_DRF.btImprimirClick(Sender: TObject);
 begin
-  TfrmTelaRelatorio.criarRelatorio(StrToDateDef(dataini.Text,2000-01-01),StrToDateDef(datafin.Text,2000-01-02));
+  TfrmTelaRelatorio.criarRelatorio(StrToDateDef(dataini.Text,2000-01-01),StrToDateDef(datafin.Text,2000-01-02),comboBoxPeriodo.ItemIndex);
 end;
 
 end.
