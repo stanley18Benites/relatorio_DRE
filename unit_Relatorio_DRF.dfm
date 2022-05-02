@@ -32,7 +32,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       Left = 19
       Top = 38
       Width = 756
-      Height = 93
+      Height = 87
       BandType = btHeader
       Borders.Sides = sdCustom
       Borders.DrawLeft = True
@@ -216,9 +216,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object RLLabel6: TRLLabel
         Left = 11
-        Top = 72
+        Top = 73
         Width = 61
-        Height = 16
+        Height = 12
         Caption = 'Descri'#231#227'o'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -230,9 +230,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object RLLabel7: TRLLabel
         Left = 616
-        Top = 72
+        Top = 73
         Width = 70
-        Height = 16
+        Height = 12
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'Saldo'
@@ -246,9 +246,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object RLLabel12: TRLLabel
         Left = 704
-        Top = 72
+        Top = 73
         Width = 39
-        Height = 16
+        Height = 12
         Alignment = taRightJustify
         AutoSize = False
         Caption = '%'
@@ -263,7 +263,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     end
     object RLBand2: TRLBand
       Left = 19
-      Top = 131
+      Top = 125
       Width = 756
       Height = 14
       Borders.Sides = sdCustom
@@ -274,7 +274,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 11
-        Top = 0
+        Top = 1
         Width = 549
         Height = 12
         AutoSize = False
@@ -292,7 +292,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object dbSaldoTotal: TRLDBText
         Left = 600
-        Top = 0
+        Top = 1
         Width = 86
         Height = 12
         Alignment = taRightJustify
@@ -311,7 +311,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object db_porcentagem: TRLDBText
         Left = 691
-        Top = 0
+        Top = 1
         Width = 52
         Height = 12
         Alignment = taRightJustify
@@ -331,7 +331,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     end
     object RLBand3: TRLBand
       Left = 19
-      Top = 145
+      Top = 139
       Width = 756
       Height = 8
       BandType = btSummary

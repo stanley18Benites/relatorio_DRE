@@ -186,7 +186,7 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     TabOrder = 2
     object rb_Sintetica_Receitas: TRadioButton
       Left = 14
-      Top = 11
+      Top = 15
       Width = 113
       Height = 17
       Caption = 'Receitas'

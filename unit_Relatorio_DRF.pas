@@ -268,7 +268,7 @@ begin
       if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0)then
       begin
         dPerc := 0.00;
-        if (dValor <> 0) and (frmTelaInicial_DRF.rb_sinteticas_Despesas.Checked) then
+        if (dValor <> 0) then  //sinteticas sobre despesas
         begin
           dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
           cds.edit;
@@ -277,10 +277,16 @@ begin
           cds.Next;
         end
         else
-          cds.Next;
+          cds.next;
       end
       else
+      begin
+        dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+        cds.edit;
+        cds.FieldByName('PERC').AsFloat := dPerc;
+        cds.Post;
         cds.Next;
+      end;
     end;
     cds.GoToBookmark(bm);
     cds.Next;
@@ -340,14 +346,17 @@ procedure TfrmTelaRelatorio.dbContaBeforePrint(Sender: TObject;
 begin
   if cds.FieldByName('NIVEL').AsInteger = 2 then
   begin
+    dbConta.Font.Size := 8;
     dbConta.Left := 31;
   end
   else if cds.FieldByName('NIVEL').AsInteger = 1 then
   begin
     dbConta.Left := 10;
+    dbConta.Font.Size := 9;
   end
   else
     dbConta.Left := 20;
+    dbConta.Font.Size := 9;
 end;
 
 procedure TfrmTelaRelatorio.RLBand2BeforePrint(Sender: TObject;
