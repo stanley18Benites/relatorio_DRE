@@ -20,7 +20,7 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
     Width = 75
     Height = 25
     Caption = 'Imprimir'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = btImprimirClick
   end
   object GroupBox1: TGroupBox
@@ -115,68 +115,12 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
       Text = '  /  /    '
     end
   end
-  object GroupBox3: TGroupBox
-    Left = 7
-    Top = 126
-    Width = 202
-    Height = 76
-    Caption = 'Percentual conta analitica sobre:'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 3
-    object rb_analitica_sReceitas: TRadioButton
-      Left = 14
-      Top = 16
-      Width = 113
-      Height = 17
-      Caption = 'Receitas'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-    end
-    object rb_analitica_sDespesas: TRadioButton
-      Left = 14
-      Top = 33
-      Width = 113
-      Height = 17
-      Caption = 'Despesas'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-    end
-    object rb_analitica_sSintetica: TRadioButton
-      Left = 14
-      Top = 50
-      Width = 113
-      Height = 17
-      Caption = 'Conta Sintetica (Pai)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
-  end
   object GroupBox4: TGroupBox
     Left = 7
     Top = 63
     Width = 169
     Height = 63
-    Caption = 'Percentual sintetica sobre:'
+    Caption = 'Percentual baseado na: '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -189,7 +133,7 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
       Top = 15
       Width = 113
       Height = 17
-      Caption = 'Receitas'
+      Caption = 'Receita'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -203,7 +147,7 @@ object frmTelaInicial_DRF: TfrmTelaInicial_DRF
       Top = 34
       Width = 113
       Height = 17
-      Caption = 'Despesas'
+      Caption = 'Grupo'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

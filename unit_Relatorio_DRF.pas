@@ -47,9 +47,6 @@ end;
     RLLabel2: TRLLabel;
     RLLabel3: TRLLabel;
     procedure RLBand2BeforePrint(Sender: TObject; var PrintIt: Boolean);
-    procedure dbContaBeforePrint(Sender: TObject; var AText: string;
-      var PrintIt: Boolean);
-    procedure RLSystemInfo2AfterPrint(Sender: TObject);
   private
     function sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
     function buscarClasse(sClasse : String): String;
@@ -66,6 +63,7 @@ implementation
  uses unit_DataModule_DRF, unit_nextPage, unit_principal_DRF;
  var cds : TClientDataSet;
  var saldo, saldoT : Double;
+ var count : integer ;
 {$R *.dfm}
 
 class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem : Integer);
@@ -73,6 +71,7 @@ class procedure TfrmTelaRelatorio.criarRelatorio(dataini, datafin : TDate; nItem
 var frmTelaRelatorio : TfrmTelaRelatorio;
 begin
 try
+  count := 0;
   frmTelaRelatorio := TfrmTelaRelatorio.Create(Application);
   frmTelaRelatorio.labelPeriodo.Caption := DateToStr(dataini) + ' À ' + DateToStr(datafin);
   frmTelaRelatorio.dsDRF.DataSet := frmTelaRelatorio.sBuscarReceitas(dataini, datafin, nItem);
@@ -81,8 +80,9 @@ finally
   frmTelaRelatorio.Free;
 end;
 end;
-//---------------------------------------------------------------------------------------------------------------------------
+
 function TfrmTelaRelatorio.sBuscarReceitas(dataini, datafin : TDate; nItem : Integer) : TClientDataSet;
+
 var
 sPos,sDescricao : String;
 saldoTotal : Double;
@@ -165,6 +165,7 @@ begin
   end;
 result := cds;
 end;
+
 function TfrmTelaRelatorio.atualizaSaldo(classificacao: string; var contas : TContasBct; valor : Currency) : boolean;
 var i : integer ;
 begin
@@ -251,6 +252,9 @@ begin
   cds.First;
   while not cds.Eof do
   begin
+    sClass := cds.FieldByName('CLASSE').AsString;
+    dValor := cds.FieldByName('SALDO').AsFloat;
+    bm := cds.GetBookmark;
     if (sClass = '')and bCondicao then
     begin
       cds.edit;
@@ -258,49 +262,40 @@ begin
       cds.Post;
       bCondicao := false;
     end
-  else  //cds.FieldByName('AS').AsString = 'S'
-  begin
-    sClass := cds.FieldByName('CLASSE').AsString;
-    iConta := cds.FieldByName('CONTA').asInteger;
-    dValor := cds.FieldByName('SALDO').AsFloat;
-    bm := cds.GetBookmark;
-    while not cds.Eof do
+    else
     begin
-
-    end;
-
-  end;
-
-    {begin
-      if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0)then
+      sClass := cds.FieldByName('CLASSE').AsString;
+      iConta := cds.FieldByName('CONTA').asInteger;
+      dValor := cds.FieldByName('SALDO').AsFloat;
+      bm := cds.GetBookmark;
+      while not cds.Eof do
       begin
-        dPerc := 0.00;
-        if (dValor <> 0) then  //sinteticas sobre despesas
+      if (cds.FieldByName('PERC').AsFloat = 0) and (frmTelaInicial_DRF.rb_Sintetica_Receitas.Checked) then
         begin
+          dPerc := 0.0;
+          cds.Edit;
           dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
-          cds.edit;
           cds.FieldByName('PERC').AsFloat := dPerc;
           cds.Post;
-          cds.Next;
         end
-        else
-          cds.next;
-      end
-      else
-      begin
-        dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
-        cds.edit;
-        cds.FieldByName('PERC').AsFloat := dPerc;
-        cds.Post;
+       else if(copy(cds.FieldByName('CLASSE').AsString,1,length(sClass)) = sClass)and(cds.FieldByName('AS').AsString = 'S')and(cds.FieldByName('PERC').AsFloat=0)then
+        begin
+          dPerc := 0.00;
+          if (dValor <> 0) then  //sinteticas sobre despesas
+          begin
+            dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
+            cds.edit;
+            cds.FieldByName('PERC').AsFloat := dPerc;
+            cds.Post;
+          end
+        end;
         cds.Next;
       end;
-    end; }
+      cds.Next;
+    end;
     cds.GoToBookmark(bm);
     cds.Next;
   end
-  //else
-  //  cds.next;
-  //cds.GoToBookmark(bm);
 end;
 
 procedure TfrmTelaRelatorio.buscarPercentualAnalitica();
@@ -309,7 +304,6 @@ var bm: TBookmark;
     dValor,dPerc, dPercSintetica: double;
     iConta : Integer;
     bCondicao, iChecked : boolean ;
-
 begin
   cds.First;
   while not cds.Eof do
@@ -322,11 +316,7 @@ begin
       cds.First;
       while not cds.Eof do   //LOOP PARA BUSCAR PERCENTUAL CONTA ANALITICA SOBRE SINTETICA
       begin
-        if length(sClass)=1then
-          begin
-            break;
-          end
-        else if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass) and(cds.FieldByName('PERC').AsFloat=0) then
+        if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass) and(cds.FieldByName('PERC').AsFloat=0) then
         begin
           dPerc := 0.00;
           if dValor<>0 then
@@ -348,24 +338,6 @@ begin
   end;
 end;
 
-procedure TfrmTelaRelatorio.dbContaBeforePrint(Sender: TObject;
-  var AText: string; var PrintIt: Boolean);
-begin
-  if cds.FieldByName('NIVEL').AsInteger = 2 then
-  begin
-    dbConta.Font.Size := 8;
-    dbConta.Left := 31;
-  end
-  else if cds.FieldByName('NIVEL').AsInteger = 1 then
-  begin
-    dbConta.Left := 10;
-    dbConta.Font.Size := 9;
-  end
-  else
-    dbConta.Left := 20;
-    dbConta.Font.Size := 9;
-end;
-
 procedure TfrmTelaRelatorio.RLBand2BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
@@ -381,43 +353,36 @@ begin
     dbSaldoTotal.Font.Style := [];
     db_porcentagem.Font.Style:= [];
   end;
+  if cds.FieldByName('NIVEL').AsInteger = 1 then
+  begin
+    dbConta.Left            := 10;
+    dbConta.Font.Size       := 9;
+    dbSaldoTotal.Font.Size  := 9;
+    db_porcentagem.Font.Size:= 9;
+  end
+  else if cds.FieldByName('NIVEL').AsInteger = 2 then
+  begin
+    dbConta.Left            := 30;
+    dbConta.Font.Size       := 8;
+    dbSaldoTotal.Font.Size  := 8;
+    db_porcentagem.Font.Size:= 8;
+  end
+  else
+  begin
+    dbConta.Left            := 20;
+    dbConta.Font.Size       := 9;
+    dbSaldoTotal.Font.Size  := 9;
+    db_porcentagem.Font.Size:= 9;
+  end;
+  if (count mod 2 = 0) then
+  begin
+    RLBand2.Color := $00E0E0E0;
+    count := count + 1;
+  end
+  else
+  begin
+    RLBand2.Color := clWhite;
+    count := count + 1;
+  end;
 end;
-procedure TfrmTelaRelatorio.RLSystemInfo2AfterPrint(Sender: TObject);
-begin
-
-end;
-
-{
-    sClass := cds.FieldByName('CLASSE').AsString;
-    iConta := cds.FieldByName('CONTA').asInteger;
-    dValor := cds.FieldByName('SALDO').AsFloat;
-    if cds.FieldByName('AS').AsString='S' then
-    begin
-      bm := cds.GetBookmark;
-      cds.First;
-      while not cds.Eof do
-      begin
-        if (copy(cds.FieldByName('CLASSE').AsString,1,length(sClass))=sClass)and(cds.FieldByName('PERC').AsFloat = 0 )AND(cds.FieldByName('AS').AsString = 'S') then
-        begin
-      //    if (sClass = '' )and (cds.FieldByName('CLASSE').AsString = '') then
-         // begin
-         //   cds.FieldByName('PERC').AsFloat := 100;
-         // //end
-
-          dPerc := 0.00;
-          //else if (dValor <>0) then
-       // begin
-          dPerc := 0.00;
-          dPerc := (cds.FieldByName('SALDO').AsFloat/dValor)*100;
-          cds.edit;
-          cds.FieldByName('PERC').AsFloat := dPerc;
-          cds.Post;
-          cds.Next;
-        end;
-      cds.Next;
-      end;
-    cds.Next;
-    end;}
-   // cds.GoToBookmark(bm);
-   // cds.Next;
 end.

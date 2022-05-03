@@ -15,10 +15,6 @@ type
     dataini: TMaskEdit;
     datafin: TMaskEdit;
     Label1: TLabel;
-    GroupBox3: TGroupBox;
-    rb_analitica_sReceitas: TRadioButton;
-    rb_analitica_sDespesas: TRadioButton;
-    rb_analitica_sSintetica: TRadioButton;
     GroupBox4: TGroupBox;
     rb_Sintetica_Receitas: TRadioButton;
     rb_Sinteticas_Despesas: TRadioButton;

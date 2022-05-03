@@ -32,7 +32,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       Left = 19
       Top = 38
       Width = 756
-      Height = 87
+      Height = 93
       BandType = btHeader
       Borders.Sides = sdCustom
       Borders.DrawLeft = True
@@ -76,7 +76,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Left = 0
         Top = 38
         Width = 778
-        Height = 34
+        Height = 40
         Borders.Sides = sdCustom
         Borders.DrawLeft = True
         Borders.DrawTop = False
@@ -86,7 +86,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           Left = 11
           Top = 1
           Width = 732
-          Height = 32
+          Height = 38
           Borders.Sides = sdCustom
           Borders.DrawLeft = True
           Borders.DrawTop = True
@@ -94,7 +94,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           Borders.DrawBottom = True
           object RLLabel9: TRLLabel
             Left = 643
-            Top = 3
+            Top = 7
             Width = 37
             Height = 14
             Caption = 'Pagina:'
@@ -108,7 +108,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           end
           object RLSystemInfo1: TRLSystemInfo
             Left = 680
-            Top = 3
+            Top = 7
             Width = 20
             Height = 14
             Alignment = taCenter
@@ -124,7 +124,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           end
           object RLLabel4: TRLLabel
             Left = 699
-            Top = 3
+            Top = 7
             Width = 15
             Height = 14
             Alignment = taCenter
@@ -140,7 +140,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
           end
           object RLSystemInfo2: TRLSystemInfo
             Left = 713
-            Top = 3
+            Top = 7
             Width = 15
             Height = 14
             Alignment = taCenter
@@ -153,11 +153,10 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             Layout = tlCenter
             ParentFont = False
             Text = ''
-            AfterPrint = RLSystemInfo2AfterPrint
           end
           object labelNomeEmpresa: TRLLabel
-            Left = 55
-            Top = 1
+            Left = 59
+            Top = 5
             Width = 358
             Height = 16
             AutoSize = False
@@ -170,8 +169,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             ParentFont = False
           end
           object labelPeriodo: TRLLabel
-            Left = 55
-            Top = 15
+            Left = 59
+            Top = 19
             Width = 358
             Height = 14
             AutoSize = False
@@ -184,8 +183,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             ParentFont = False
           end
           object RLLabel2: TRLLabel
-            Left = 0
-            Top = 1
+            Left = 4
+            Top = 5
             Width = 56
             Height = 16
             AutoSize = False
@@ -199,8 +198,8 @@ object frmTelaRelatorio: TfrmTelaRelatorio
             ParentFont = False
           end
           object RLLabel3: TRLLabel
-            Left = 0
-            Top = 15
+            Left = 4
+            Top = 19
             Width = 51
             Height = 14
             AutoSize = False
@@ -216,7 +215,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object RLLabel6: TRLLabel
         Left = 11
-        Top = 73
+        Top = 78
         Width = 61
         Height = 12
         Caption = 'Descri'#231#227'o'
@@ -230,7 +229,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object RLLabel7: TRLLabel
         Left = 616
-        Top = 73
+        Top = 78
         Width = 70
         Height = 12
         Alignment = taRightJustify
@@ -246,7 +245,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       end
       object RLLabel12: TRLLabel
         Left = 704
-        Top = 73
+        Top = 78
         Width = 39
         Height = 12
         Alignment = taRightJustify
@@ -263,7 +262,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
     end
     object RLBand2: TRLBand
       Left = 19
-      Top = 125
+      Top = 131
       Width = 756
       Height = 14
       Borders.Sides = sdCustom
@@ -271,6 +270,9 @@ object frmTelaRelatorio: TfrmTelaRelatorio
       Borders.DrawTop = False
       Borders.DrawRight = True
       Borders.DrawBottom = False
+      Color = clWhite
+      ParentColor = False
+      Transparent = False
       BeforePrint = RLBand2BeforePrint
       object dbConta: TRLDBText
         Left = 11
@@ -288,7 +290,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Text = ''
-        BeforePrint = dbContaBeforePrint
+        Transparent = False
       end
       object dbSaldoTotal: TRLDBText
         Left = 600
@@ -308,6 +310,7 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Text = ''
+        Transparent = False
       end
       object db_porcentagem: TRLDBText
         Left = 691
@@ -327,11 +330,12 @@ object frmTelaRelatorio: TfrmTelaRelatorio
         Layout = tlCenter
         ParentFont = False
         Text = ''
+        Transparent = False
       end
     end
     object RLBand3: TRLBand
       Left = 19
-      Top = 139
+      Top = 145
       Width = 756
       Height = 8
       BandType = btSummary
